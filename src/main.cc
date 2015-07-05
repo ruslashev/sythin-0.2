@@ -1,3 +1,5 @@
+#include "note.hh"
+
 #include <SFML/Graphics.hpp>
 
 int main()
@@ -8,6 +10,8 @@ int main()
 			sf::Style::Titlebar | sf::Style::Close,
 			settings);
 
+	Note one;
+
 	while (window.isOpen()) {
 		sf::Event event;
 		while (window.pollEvent(event)) {
@@ -16,6 +20,8 @@ int main()
 		}
 
 		window.clear(sf::Color::Black);
+
+		one.Draw(&window);
 
 		window.display();
 	}

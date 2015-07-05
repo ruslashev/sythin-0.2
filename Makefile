@@ -1,6 +1,6 @@
 CXX = g++
 SRCDIR = src
-OBJS = $(patsubst $(SRCDIR)/%.cpp, .objs/%.o, $(shell find $(SRCDIR) -type f -name '*.cpp' ))
+OBJS = $(patsubst $(SRCDIR)/%.cc, .objs/%.o, $(shell find $(SRCDIR) -type f -name '*.cc' ))
 CXXFLAGS = -Wall -Wextra -Werror -g -std=c++0x
 LDFLAGS = -lsfml-graphics -lsfml-window -lsfml-system
 EXECNAME = sythin2
@@ -8,13 +8,13 @@ EXECNAME = sythin2
 all: objdir $(EXECNAME)
 	./$(EXECNAME)
 
-.objs/%.o: $(SRCDIR)/%.cpp
-	@$(CXX) -c -o $@ $< $(CXXFLAGS)
+.objs/%.o: $(SRCDIR)/%.cc
 	@echo "Compiling $<"
+	@$(CXX) -c -o $@ $< $(CXXFLAGS)
 
 $(EXECNAME): $(OBJS)
-	@$(CXX) -o $@ $^ $(LDFLAGS)
 	@echo "Linking to $@"
+	@$(CXX) -o $@ $^ $(LDFLAGS)
 
 valgrind: objdir $(EXECNAME)
 	valgrind --leak-check=full ./$(EXECNAME)
