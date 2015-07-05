@@ -9,7 +9,11 @@ Note::Note()
 	rectangle_shape.setOutlineThickness(Constants.rectangle.outline);
 	rectangle_shape.setFillColor(Constants.rectangle.fillColor);
 	rectangle_shape.setOutlineColor(Constants.rectangle.outlineColor);
-	rectangle_shape.setPosition(10, 10);
+}
+
+void Note::SetPosition(int x, int y)
+{
+	rectangle_shape.setPosition(x, y);
 }
 
 void Note::Draw(sf::RenderWindow *window)

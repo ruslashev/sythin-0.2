@@ -8,6 +8,7 @@ class Note
 	sf::RectangleShape rectangle_shape;
 public:
 	Note();
+	void SetPosition(int x, int y);
 	void Draw(sf::RenderWindow *window);
 };
 

@@ -5,6 +5,8 @@
 
 const struct
 {
+	int windowWidth = 800;
+	int windowHeight = 600;
 	struct {
 		int size = 60;
 		int outline = -3;
