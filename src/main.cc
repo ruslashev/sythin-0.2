@@ -9,7 +9,7 @@ public:
 	sf::RenderWindow window;
 	MainLoop() {
 		sf::ContextSettings settings;
-		settings.antialiasingLevel = 8;
+		settings.antialiasingLevel = Constants.antialiasing;
 		window.create(
 				sf::VideoMode(Globals.windowWidth, Globals.windowHeight),
 				"sythin2",
@@ -42,8 +42,29 @@ int main()
 		notes[i].SetPosition(x, y);
 	}
 
+	notes[0].key  = sf::Keyboard::Num1;
+	notes[1].key  = sf::Keyboard::Num2;
+	notes[2].key  = sf::Keyboard::Num3;
+	notes[3].key  = sf::Keyboard::Num4;
+	notes[4].key  = sf::Keyboard::Num5;
+	notes[5].key  = sf::Keyboard::Num6;
+	notes[6].key  = sf::Keyboard::Num7;
+	notes[7].key  = sf::Keyboard::Num8;
+	notes[8].key  = sf::Keyboard::Num9;
+	notes[9].key  = sf::Keyboard::Num0;
+	notes[10].key = sf::Keyboard::Dash;
+	notes[11].key = sf::Keyboard::Equal;
+
 	while (ml.Update()) {
 		for (int i = 0; i < 12; i++) {
+			if (sf::Keyboard::isKeyPressed(notes[i].key))
+				notes[i].keyPressed = true;
+			else {
+				if (notes[i].keyPressed)
+					notes[i].KeyReleased();
+				notes[i].keyPressed = false;
+			}
+
 			notes[i].Draw(&ml.window);
 		}
 

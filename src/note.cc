@@ -7,13 +7,13 @@ Note::Note()
 	rectangle_shape.setSize(
 			sf::Vector2f(Constants.rectangle.size, Constants.rectangle.size));
 	rectangle_shape.setOutlineThickness(Constants.rectangle.outline);
-	rectangle_shape.setFillColor(Constants.rectangle.fillColor);
-	rectangle_shape.setOutlineColor(Constants.rectangle.outlineColor);
 
 	line_shape.setSize(sf::Vector2f(
 				Constants.line.thickness,
 				Globals.windowHeight - Constants.padding*2));
 	line_shape.setFillColor(Constants.line.color);
+
+	keyPressed = false;
 }
 
 void Note::SetPosition(int x, int y)
@@ -25,6 +25,19 @@ void Note::SetPosition(int x, int y)
 void Note::Draw(sf::RenderWindow *window)
 {
 	window->draw(line_shape);
+
+	if (keyPressed) {
+		rectangle_shape.setFillColor(Constants.rectangle.pressedFillColor);
+		rectangle_shape.setOutlineColor(Constants.rectangle.pressedOutlineColor);
+	} else {
+		rectangle_shape.setFillColor(Constants.rectangle.fillColor);
+		rectangle_shape.setOutlineColor(Constants.rectangle.outlineColor);
+	}
 	window->draw(rectangle_shape);
+}
+
+void Note::KeyReleased()
+{
+
 }
 
