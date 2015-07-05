@@ -11,7 +11,7 @@ public:
 		sf::ContextSettings settings;
 		settings.antialiasingLevel = 8;
 		window.create(
-				sf::VideoMode(Constants.windowWidth, Constants.windowHeight),
+				sf::VideoMode(Globals.windowWidth, Globals.windowHeight),
 				"sythin2",
 				sf::Style::Titlebar | sf::Style::Close,
 				settings);
@@ -38,7 +38,7 @@ int main()
 	for (int i = 0; i < 12; i++) {
 		notes[i] = Note();
 		int x = Constants.padding + i*(Constants.rectangle.size + Constants.padding);
-		int y = Constants.windowHeight - Constants.padding - Constants.rectangle.size;
+		int y = Globals.windowHeight - Constants.padding - Constants.rectangle.size;
 		notes[i].SetPosition(x, y);
 	}
 

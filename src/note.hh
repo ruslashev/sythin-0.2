@@ -6,6 +6,7 @@
 class Note
 {
 	sf::RectangleShape rectangle_shape;
+	sf::RectangleShape line_shape;
 public:
 	Note();
 	void SetPosition(int x, int y);
