@@ -4,40 +4,65 @@
 
 Note::Note()
 {
-	rectangle_shape.setSize(
-			sf::Vector2f(Constants.rectangle.size, Constants.rectangle.size));
-	rectangle_shape.setOutlineThickness(Constants.rectangle.outline);
+	rectangleShape.setSize(sf::Vector2f(
+				Constants.rectangle.size, Constants.rectangle.size));
+	rectangleShape.setOutlineThickness(Constants.rectangle.outline);
 
-	line_shape.setSize(sf::Vector2f(
+	lineShape.setSize(sf::Vector2f(
 				Constants.line.thickness,
 				Globals.windowHeight - Constants.padding*2));
-	line_shape.setFillColor(Constants.line.color);
+	lineShape.setFillColor(Constants.line.color);
+
+	sf::Int16 playSamples[Constants.samplesPerSecond];
+	double x = 0;
+	for (int i = 0; i < Constants.samplesPerSecond; i++) {
+		playSamples[i] = Globals.volume * sin(M_PI*2*x);
+		x += 440./Constants.samplesPerSecond;
+	}
+
+	if (!playSoundBuffer.loadFromSamples(playSamples,
+				Constants.samplesPerSecond,
+				Constants.channels,
+				Constants.samplesPerSecond))
+		puts("failed to copy sound buffer");
+
+	playSound.setBuffer(playSoundBuffer);
+	playSound.setLoop(true);
 
 	keyPressed = false;
 }
 
 void Note::SetPosition(int x, int y)
 {
-	rectangle_shape.setPosition(x, y);
-	line_shape.setPosition(x + Constants.rectangle.size/2, Constants.padding);
+	rectangleShape.setPosition(x, y);
+	lineShape.setPosition(x + Constants.rectangle.size/2, Constants.padding);
 }
 
 void Note::Draw(sf::RenderWindow *window)
 {
-	window->draw(line_shape);
+	window->draw(lineShape);
 
 	if (keyPressed) {
-		rectangle_shape.setFillColor(Constants.rectangle.pressedFillColor);
-		rectangle_shape.setOutlineColor(Constants.rectangle.pressedOutlineColor);
+		rectangleShape.setFillColor(Constants.rectangle.pressedFillColor);
+		rectangleShape.setOutlineColor(Constants.rectangle.pressedOutlineColor);
 	} else {
-		rectangle_shape.setFillColor(Constants.rectangle.fillColor);
-		rectangle_shape.setOutlineColor(Constants.rectangle.outlineColor);
+		rectangleShape.setFillColor(Constants.rectangle.fillColor);
+		rectangleShape.setOutlineColor(Constants.rectangle.outlineColor);
 	}
-	window->draw(rectangle_shape);
+	window->draw(rectangleShape);
+}
+
+void Note::Update()
+{
+}
+
+void Note::KeyPressed()
+{
+	playSound.play();
 }
 
 void Note::KeyReleased()
 {
-
+	playSound.stop();
 }
 

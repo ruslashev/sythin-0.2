@@ -22,6 +22,9 @@ const struct
 		sf::Color color = sf::Color(30, 30, 30);
 	} line {};
 	int padding = 10;
+
+	int channels = 1;
+	int samplesPerSecond = 44100;
 } Constants {};
 
 struct
@@ -30,6 +33,7 @@ struct
 		Constants.padding +
 		12*(Constants.padding + Constants.rectangle.size);
 	int windowHeight = windowWidth;
+	int volume = 30000;
 } Globals {};
 
 #endif

@@ -2,11 +2,17 @@
 #define NOTE_HH
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
+#include <SFML/Config.hpp>
+#include <vector>
 
 class Note
 {
-	sf::RectangleShape rectangle_shape;
-	sf::RectangleShape line_shape;
+	sf::RectangleShape rectangleShape;
+	sf::RectangleShape lineShape;
+
+	sf::SoundBuffer playSoundBuffer;
+	sf::Sound playSound;
 public:
 	sf::Keyboard::Key key;
 	bool keyPressed;
@@ -14,7 +20,9 @@ public:
 	Note();
 	void SetPosition(int x, int y);
 	void Draw(sf::RenderWindow *window);
+	void Update();
 
+	void KeyPressed();
 	void KeyReleased();
 };
 

@@ -2,7 +2,7 @@ CXX = g++
 SRCDIR = src
 OBJS = $(patsubst $(SRCDIR)/%.cc, .objs/%.o, $(shell find $(SRCDIR) -type f -name '*.cc' ))
 CXXFLAGS = -Wall -Wextra -Werror -g -std=c++0x
-LDFLAGS = -lsfml-graphics -lsfml-window -lsfml-system
+LDFLAGS = -lsfml-audio -lsfml-graphics -lsfml-window -lsfml-system
 EXECNAME = sythin2
 
 all: objdir $(EXECNAME)
