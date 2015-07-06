@@ -23,6 +23,7 @@ const struct
 
 	int channels = 1;
 	int samplesPerSecond = 44100;
+	double stdTuning = 440;
 } Constants {};
 
 struct
@@ -31,7 +32,7 @@ struct
 		Constants.padding +
 		12*(Constants.padding + Constants.rectangle.size);
 	int windowHeight = windowWidth;
-	int volume = 30000;
+	int volume = 5000;
 } Globals {};
 
 #endif

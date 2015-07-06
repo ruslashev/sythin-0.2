@@ -3,7 +3,6 @@
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
-#include <SFML/Config.hpp>
 #include <vector>
 
 class Note
@@ -17,11 +16,13 @@ class Note
 	sf::Sound playSound;
 public:
 	sf::Keyboard::Key key;
+	double baseFrequency;
 	bool keyPressed;
 
 	Note();
 	void SetPosition(int x, int y);
 	void SetHue(int h);
+	void SetFrequency(double frequency);
 	void Draw(sf::RenderWindow *window);
 	void Update();
 
