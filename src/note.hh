@@ -10,6 +10,8 @@ class Note
 {
 	sf::RectangleShape rectangleShape;
 	sf::RectangleShape lineShape;
+	sf::Color baseFillColor, baseOutlineColor,
+		pressedFillColor, pressedOutlineColor;
 
 	sf::SoundBuffer playSoundBuffer;
 	sf::Sound playSound;
@@ -19,6 +21,7 @@ public:
 
 	Note();
 	void SetPosition(int x, int y);
+	void SetHue(int h);
 	void Draw(sf::RenderWindow *window);
 	void Update();
 

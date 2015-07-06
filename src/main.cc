@@ -33,6 +33,7 @@ int main()
 
 	Note notes[12];
 	for (int i = 0; i < 12; i++) {
+		notes[i].SetHue((i/12.0)*360);
 		int x = Constants.padding + i*(Constants.rectangle.size + Constants.padding);
 		int y = Globals.windowHeight - Constants.padding - Constants.rectangle.size;
 		notes[i].SetPosition(x, y);
