@@ -2,6 +2,13 @@
 #include <string>
 #include <algorithm>
 
+bool openFile();
+void writeBuffer();
+
+std::string filename;
+char *buffer;
+size_t fileSize;
+
 int main(int argc, char **argv)
 {
 	if (argc < 2) {
@@ -9,26 +16,41 @@ int main(int argc, char **argv)
 		return 1;
 	}
 
-	std::string filename = argv[1];
+	filename = argv[1];
+
+	if (!openFile())
+		return 1;
+
+	writeBuffer();
+
+	delete [] buffer;
+	return 0;
+}
+
+bool openFile() {
 	FILE *f = fopen(filename.c_str(), "rb");
 	if (!f) {
 		puts("failed to open file for reading");
-		return 1;
+		return false;
 	}
 
 	fseek(f, 0, SEEK_END);
-	long fileSize = ftell(f);
+	fileSize = ftell(f);
 	rewind(f);
 
-	char *buffer = new char[fileSize];
+	buffer = new char[fileSize];
 	size_t read = fread(buffer, 1, fileSize, f);
 	fclose(f);
 	if (read != fileSize) {
 		puts("failed to read file");
 		delete [] buffer;
-		return 1;
+		return false;
 	}
+	return true;
+}
 
+void writeBuffer()
+{
 	std::string struct_name = "_";
 	for (auto &c : filename)
 		if (c == '.' || c == '_')
@@ -72,8 +94,5 @@ int main(int argc, char **argv)
 	p("};");
 	p("");
 	p("#endif");
-
-	delete [] buffer;
-	return 0;
 }
 
