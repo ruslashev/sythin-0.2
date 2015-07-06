@@ -53,7 +53,37 @@ void Note::SetFrequency(double frequency)
 
 	playSound.setBuffer(playSoundBuffer);
 	playSound.setLoop(true);
+}
 
+void Note::SetNoteName(char letter, char accidental, int octave)
+{
+	noteLetter = letter;
+	noteAccidental = accidental;
+	noteOctave = octave;
+
+	if (!renderTexture.create(40, 40))
+		throw;
+	renderTexture.clear(baseFillColor);
+
+	nameText.setString(noteLetter);
+	nameText.setCharacterSize(20);
+	nameText.setColor(sf::Color::Green);
+	renderTexture.draw(nameText);
+	auto rect = nameText.getLocalBounds();
+
+	nameText.setString(noteAccidental);
+	nameText.setCharacterSize(10);
+	nameText.setPosition(rect.width+2, 0);
+	renderTexture.draw(nameText);
+
+	nameText.setString(std::to_string(noteOctave));
+	auto octaveRect = nameText.getLocalBounds();
+	nameText.setPosition(rect.width+2, rect.height-octaveRect.height);
+	renderTexture.draw(nameText);
+
+	renderTexture.display();
+
+	unpressedTextSprite.setTexture(renderTexture.getTexture());
 }
 
 void Note::Draw(sf::RenderWindow *window)
@@ -67,7 +97,11 @@ void Note::Draw(sf::RenderWindow *window)
 		rectangleShape.setFillColor(baseFillColor);
 		rectangleShape.setOutlineColor(baseOutlineColor);
 	}
+
 	window->draw(rectangleShape);
+
+	unpressedTextSprite.setPosition(rectangleShape.getPosition());
+	window->draw(unpressedTextSprite);
 }
 
 void Note::Update()

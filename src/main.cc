@@ -31,12 +31,17 @@ int main()
 {
 	MainLoop ml;
 
+	sf::Font font;
+	if (!font.loadFromFile("MuseoSans_500.otf"))
+		return 1;
+
 	Note notes[12];
 	for (int i = 0; i < 12; i++) {
 		notes[i].SetHue((i/12.0)*360);
 		int x = Constants.padding + i*(Constants.rectangle.size + Constants.padding);
 		int y = Globals.windowHeight - Constants.padding - Constants.rectangle.size;
 		notes[i].SetPosition(x, y);
+		notes[i].nameText.setFont(font);
 	}
 
 	notes[ 0].key = sf::Keyboard::Num1;
@@ -64,6 +69,19 @@ int main()
 	notes[ 9].SetFrequency(NoteNameToFreq(Fs, 3));
 	notes[10].SetFrequency(NoteNameToFreq(G,  3));
 	notes[11].SetFrequency(NoteNameToFreq(Gs, 3));
+
+	notes[ 0].SetNoteName('A', ' ', 3);
+	notes[ 1].SetNoteName('A', '#', 3);
+	notes[ 2].SetNoteName('B', ' ', 3);
+	notes[ 3].SetNoteName('C', ' ', 3);
+	notes[ 4].SetNoteName('C', '#', 3);
+	notes[ 5].SetNoteName('D', ' ', 3);
+	notes[ 6].SetNoteName('D', '#', 3);
+	notes[ 7].SetNoteName('E', ' ', 3);
+	notes[ 8].SetNoteName('F', ' ', 3);
+	notes[ 9].SetNoteName('F', '#', 3);
+	notes[10].SetNoteName('G', ' ', 3);
+	notes[11].SetNoteName('G', '#', 3);
 
 	while (ml.Update()) {
 		while (ml.window.pollEvent(ml.event)) {
