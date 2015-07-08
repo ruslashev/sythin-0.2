@@ -19,8 +19,6 @@ const struct
 	struct {
 		int size = 20;
 		int spacing = -1;
-		// int smallSize = 10;
-		// int xPadding = 1;
 
 		int saturation = 70;
 		int value = 15;

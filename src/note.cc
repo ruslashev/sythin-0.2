@@ -37,6 +37,8 @@ void Note::generateSamples()
 
 void Note::createTextures()
 {
+	sf::RenderTexture textRenderTexture, pressedTextRenderTexture;
+
 	nameText.setCharacterSize(Constants.text.size);
 	int total_width = 0;
 	nameText.setString(noteLetter);
@@ -95,39 +97,28 @@ void Note::createTextures()
 	nameText.setColor(pressedTextColor);
 	pressedTextRenderTexture.draw(nameText);
 
-#if 0
-	nameText.setString(noteLetter);
-	nameText.setColor(textColor);
-	nameText.setCharacterSize(Constants.text.size);
-	auto bigRect = nameText.getLocalBounds();
-	nameText.setPosition(-bigRect.left, -bigRect.top);
-	textRenderTexture.draw(nameText);
-
-	auto bigWidth = bigRect.width - bigRect.left;
-	auto bigHeight = bigRect.height - bigRect.top;
-
-	nameText.setCharacterSize(Constants.text.smallSize);
-
-	nameText.setString(noteAccidental);
-	auto accidentalRect = nameText.getLocalBounds();
-	nameText.setPosition(
-			-accidentalRect.left + bigWidth + Constants.text.xPadding,
-			-accidentalRect.top);
-	textRenderTexture.draw(nameText);
-
-	nameText.setString(std::to_string(noteOctave));
-	auto octaveRect = nameText.getLocalBounds();
-	auto octaveHeight = octaveRect.height;
-	nameText.setPosition(
-			-octaveRect.left + bigWidth + Constants.text.xPadding,
-			-octaveRect.top + bigHeight - octaveHeight);
-	textRenderTexture.draw(nameText);
-#endif
-
 	textRenderTexture.display();
+	pressedTextRenderTexture.display();
 
-	textSprite.setTexture(textRenderTexture.getTexture());
-	pressedTextSprite.setTexture(pressedTextRenderTexture.getTexture());
+	textTexture = sf::Texture(textRenderTexture.getTexture());
+	pressedTextTexture = sf::Texture(pressedTextRenderTexture.getTexture());
+	textSprite.setTexture(textTexture);
+	pressedTextSprite.setTexture(pressedTextTexture);
+
+	textSprite.setPosition(
+			rectangleShape.getPosition().x +
+			rectangleShape.getLocalBounds().width/2 -
+			textSprite.getLocalBounds().width/2,
+			rectangleShape.getPosition().y +
+			rectangleShape.getLocalBounds().height/2 -
+			textSprite.getLocalBounds().height/2);
+	pressedTextSprite.setPosition(
+			rectangleShape.getPosition().x +
+			rectangleShape.getLocalBounds().width/2 -
+			pressedTextSprite.getLocalBounds().width/2,
+			rectangleShape.getPosition().y +
+			rectangleShape.getLocalBounds().height/2 -
+			pressedTextSprite.getLocalBounds().height/2);
 }
 
 void Note::SetPosition(int x, int y)
@@ -207,22 +198,8 @@ void Note::Draw(sf::RenderWindow *window)
 	window->draw(rectangleShape);
 
 	if (keyPressed) {
-		pressedTextSprite.setPosition(
-				rectangleShape.getPosition().x +
-				rectangleShape.getLocalBounds().width/2 -
-				pressedTextSprite.getLocalBounds().width/2,
-				rectangleShape.getPosition().y +
-				rectangleShape.getLocalBounds().height/2 -
-				pressedTextSprite.getLocalBounds().height/2);
 		window->draw(pressedTextSprite);
 	} else {
-		textSprite.setPosition(
-				rectangleShape.getPosition().x +
-				rectangleShape.getLocalBounds().width/2 -
-				textSprite.getLocalBounds().width/2,
-				rectangleShape.getPosition().y +
-				rectangleShape.getLocalBounds().height/2 -
-				textSprite.getLocalBounds().height/2);
 		window->draw(textSprite);
 	}
 }
