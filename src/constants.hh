@@ -9,12 +9,24 @@ const struct
 	struct {
 		int size = 50;
 		int outline = -2;
-		int baseSaturation = 10;
+
+		int saturation = 10;
 		int pressedSaturation = 59;
 
-		int baseValue = 97;
+		int value = 97;
 		int outlineValue = 78;
 	} rectangle {};
+	struct {
+		int size = 21;
+		int smallSize = 11;
+		int yOffset = 3;
+		int smallXOffset = 1;
+
+		int saturation = 70;
+		int value = 17;
+		int pressedSaturation = 8;
+		int pressedValue = 97;
+	} text {};
 	struct {
 		int thickness = 2;
 		sf::Color color = sf::Color(30, 30, 30);

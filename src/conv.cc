@@ -1,6 +1,8 @@
 #include "conv.hh"
 #include "constants.hh"
 
+namespace conv {
+
 sf::Color HSVtoRGB(int h_abs, int s_abs, int v_abs)
 {
 	double h = h_abs / 360.0;
@@ -29,16 +31,18 @@ sf::Color HSVtoRGB(int h_abs, int s_abs, int v_abs)
 	return out;
 }
 
-double NoteNameToFreq(Name name, int octave)
+double NoteNameToFreq(conv::Name name, int octave)
 {
 	// here "difference" is "measured" from A4
 	int octaveDifference = octave - 4;
-	int semitoneDifference = name - A;
+	int semitoneDifference = name - conv::A;
 
 	double frequency = Constants.stdTuning *
 		pow(2, octaveDifference) *
 		pow(2, semitoneDifference / 12.0);
 
 	return frequency;
+}
+
 }
 

@@ -1,6 +1,8 @@
 #ifndef NOTE_HH
 #define NOTE_HH
 
+#include "conv.hh"
+
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <vector>
@@ -10,14 +12,19 @@ class Note
 {
 	sf::RectangleShape rectangleShape;
 	sf::RectangleShape lineShape;
-	sf::Color baseFillColor, baseOutlineColor,
-		pressedFillColor, pressedOutlineColor;
+	sf::Color
+		color, outlineColor,
+		pressedColor, pressedOutlineColor,
+		textColor, pressedTextColor;
 
 	sf::SoundBuffer playSoundBuffer;
 	sf::Sound playSound;
 
-	sf::RenderTexture renderTexture;
+	sf::RenderTexture textRenderTexture;
 	sf::Sprite unpressedTextSprite, pressedTextSprite;
+
+	void generateSamples();
+	void createTextures();
 public:
 	sf::Keyboard::Key key;
 	double baseFrequency;
@@ -31,8 +38,7 @@ public:
 	Note();
 	void SetPosition(int x, int y);
 	void SetHue(int h);
-	void SetFrequency(double frequency);
-	void SetNoteName(char letter, char accidental, int octave);
+	void SetNoteName(conv::Name noteName, int octave);
 	void Draw(sf::RenderWindow *window);
 	void Update();
 

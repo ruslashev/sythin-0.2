@@ -16,28 +16,8 @@ Note::Note()
 	keyPressed = false;
 }
 
-void Note::SetPosition(int x, int y)
+void Note::generateSamples()
 {
-	rectangleShape.setPosition(x, y);
-	lineShape.setPosition(x + Constants.rectangle.size/2, Constants.padding);
-}
-
-void Note::SetHue(int h)
-{
-	int baseSat = Constants.rectangle.baseSaturation,
-		baseVal = Constants.rectangle.baseValue,
-		outlineVal = Constants.rectangle.outlineValue,
-		pressedSat = Constants.rectangle.pressedSaturation;
-	baseFillColor = HSVtoRGB(h, baseSat, baseVal);
-	baseOutlineColor = HSVtoRGB(h, baseSat, outlineVal);
-	pressedFillColor = HSVtoRGB(h, pressedSat, baseVal);
-	pressedOutlineColor = HSVtoRGB(h, pressedSat, outlineVal);
-}
-
-void Note::SetFrequency(double frequency)
-{
-	baseFrequency = frequency;
-
 	sf::Int16 playSamples[Constants.samplesPerSecond];
 	double x = 0;
 	for (int i = 0; i < Constants.samplesPerSecond; i++) {
@@ -55,35 +35,95 @@ void Note::SetFrequency(double frequency)
 	playSound.setLoop(true);
 }
 
-void Note::SetNoteName(char letter, char accidental, int octave)
+void Note::createTextures()
 {
-	noteLetter = letter;
-	noteAccidental = accidental;
-	noteOctave = octave;
-
-	if (!renderTexture.create(40, 40))
+	if (!textRenderTexture.create(40, 40))
 		throw;
-	renderTexture.clear(baseFillColor);
+	textRenderTexture.clear(color);
 
+	nameText.setPosition(0, -Constants.text.yOffset);
 	nameText.setString(noteLetter);
-	nameText.setCharacterSize(20);
-	nameText.setColor(sf::Color::Green);
-	renderTexture.draw(nameText);
+	nameText.setCharacterSize(Constants.text.size);
+	nameText.setColor(textColor);
+	textRenderTexture.draw(nameText);
 	auto rect = nameText.getLocalBounds();
 
 	nameText.setString(noteAccidental);
-	nameText.setCharacterSize(10);
-	nameText.setPosition(rect.width+2, 0);
-	renderTexture.draw(nameText);
+	nameText.setCharacterSize(Constants.text.smallSize);
+	nameText.setPosition(rect.width+Constants.text.smallXOffset, 0);
+	textRenderTexture.draw(nameText);
 
 	nameText.setString(std::to_string(noteOctave));
 	auto octaveRect = nameText.getLocalBounds();
-	nameText.setPosition(rect.width+2, rect.height-octaveRect.height);
-	renderTexture.draw(nameText);
+	nameText.setPosition(rect.width+Constants.text.smallXOffset,
+			rect.height-octaveRect.height);
+	textRenderTexture.draw(nameText);
 
-	renderTexture.display();
+	textRenderTexture.display();
 
-	unpressedTextSprite.setTexture(renderTexture.getTexture());
+	unpressedTextSprite.setTexture(textRenderTexture.getTexture());
+}
+
+void Note::SetPosition(int x, int y)
+{
+	rectangleShape.setPosition(x, y);
+	lineShape.setPosition(x + Constants.rectangle.size/2, Constants.padding);
+}
+
+void Note::SetHue(int h)
+{
+	int saturation = Constants.rectangle.saturation;
+	int pressedSaturation = Constants.rectangle.pressedSaturation;
+	int value = Constants.rectangle.value;
+	int outlineValue = Constants.rectangle.outlineValue;
+	int textSaturation = Constants.text.saturation;
+	int textValue = Constants.text.value;
+	int textPressedSaturation = Constants.text.pressedSaturation;
+	int textPressedValue = Constants.text.pressedValue;
+
+	color               = conv::HSVtoRGB(h, saturation,        value);
+	outlineColor        = conv::HSVtoRGB(h, saturation,        outlineValue);
+	pressedColor        = conv::HSVtoRGB(h, pressedSaturation, value);
+	pressedOutlineColor = conv::HSVtoRGB(h, pressedSaturation, outlineValue);
+	textColor           = conv::HSVtoRGB(h, textSaturation,    textValue);
+	pressedTextColor    = conv::HSVtoRGB(h, textPressedSaturation, textPressedValue);
+}
+
+void Note::SetNoteName(conv::Name noteName, int octave)
+{
+	baseFrequency = conv::NoteNameToFreq(noteName, octave);
+	generateSamples();
+
+	switch (noteName) {
+		case conv::A: case conv::As:
+			noteLetter = 'A'; break;
+		case conv::B:
+			noteLetter = 'B'; break;
+		case conv::C: case conv::Cs:
+			noteLetter = 'C'; break;
+		case conv::D: case conv::Ds:
+			noteLetter = 'D'; break;
+		case conv::E:
+			noteLetter = 'E'; break;
+		case conv::F: case conv::Fs:
+			noteLetter = 'F'; break;
+		case conv::G: case conv::Gs:
+			noteLetter = 'G'; break;
+	}
+	switch (noteName) {
+		case conv::As:
+		case conv::Cs:
+		case conv::Ds:
+		case conv::Fs:
+		case conv::Gs:
+			noteAccidental = '#';
+			break;
+		default:
+			noteAccidental = ' ';
+			break;
+	}
+	noteOctave = octave;
+	createTextures();
 }
 
 void Note::Draw(sf::RenderWindow *window)
@@ -91,11 +131,11 @@ void Note::Draw(sf::RenderWindow *window)
 	window->draw(lineShape);
 
 	if (keyPressed) {
-		rectangleShape.setFillColor(pressedFillColor);
+		rectangleShape.setFillColor(pressedColor);
 		rectangleShape.setOutlineColor(pressedOutlineColor);
 	} else {
-		rectangleShape.setFillColor(baseFillColor);
-		rectangleShape.setOutlineColor(baseOutlineColor);
+		rectangleShape.setFillColor(color);
+		rectangleShape.setOutlineColor(outlineColor);
 	}
 
 	window->draw(rectangleShape);

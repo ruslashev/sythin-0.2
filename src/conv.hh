@@ -2,6 +2,8 @@
 #define CONV_HH
 
 #include <SFML/Graphics.hpp>
+
+namespace conv {
 sf::Color HSVtoRGB(int h_abs, int s_abs, int v_abs);
 
 enum Name {
@@ -19,6 +21,7 @@ enum Name {
 	Gs
 };
 double NoteNameToFreq(Name name, int octave);
+}
 
 #endif
 

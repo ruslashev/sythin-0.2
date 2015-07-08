@@ -57,31 +57,18 @@ int main()
 	notes[10].key = sf::Keyboard::Dash;
 	notes[11].key = sf::Keyboard::Equal;
 
-	notes[ 0].SetFrequency(NoteNameToFreq(A,  3));
-	notes[ 1].SetFrequency(NoteNameToFreq(As, 3));
-	notes[ 2].SetFrequency(NoteNameToFreq(B,  3));
-	notes[ 3].SetFrequency(NoteNameToFreq(C,  3));
-	notes[ 4].SetFrequency(NoteNameToFreq(Cs, 3));
-	notes[ 5].SetFrequency(NoteNameToFreq(D,  3));
-	notes[ 6].SetFrequency(NoteNameToFreq(Ds, 3));
-	notes[ 7].SetFrequency(NoteNameToFreq(E,  3));
-	notes[ 8].SetFrequency(NoteNameToFreq(F,  3));
-	notes[ 9].SetFrequency(NoteNameToFreq(Fs, 3));
-	notes[10].SetFrequency(NoteNameToFreq(G,  3));
-	notes[11].SetFrequency(NoteNameToFreq(Gs, 3));
-
-	notes[ 0].SetNoteName('A', ' ', 3);
-	notes[ 1].SetNoteName('A', '#', 3);
-	notes[ 2].SetNoteName('B', ' ', 3);
-	notes[ 3].SetNoteName('C', ' ', 3);
-	notes[ 4].SetNoteName('C', '#', 3);
-	notes[ 5].SetNoteName('D', ' ', 3);
-	notes[ 6].SetNoteName('D', '#', 3);
-	notes[ 7].SetNoteName('E', ' ', 3);
-	notes[ 8].SetNoteName('F', ' ', 3);
-	notes[ 9].SetNoteName('F', '#', 3);
-	notes[10].SetNoteName('G', ' ', 3);
-	notes[11].SetNoteName('G', '#', 3);
+	notes[ 0].SetNoteName(conv::A,  3);
+	notes[ 1].SetNoteName(conv::As, 3);
+	notes[ 2].SetNoteName(conv::B,  3);
+	notes[ 3].SetNoteName(conv::C,  3);
+	notes[ 4].SetNoteName(conv::Cs, 3);
+	notes[ 5].SetNoteName(conv::D,  3);
+	notes[ 6].SetNoteName(conv::Ds, 3);
+	notes[ 7].SetNoteName(conv::E,  3);
+	notes[ 8].SetNoteName(conv::F,  3);
+	notes[ 9].SetNoteName(conv::Fs, 3);
+	notes[10].SetNoteName(conv::G,  3);
+	notes[11].SetNoteName(conv::Gs, 3);
 
 	while (ml.Update()) {
 		while (ml.window.pollEvent(ml.event)) {
