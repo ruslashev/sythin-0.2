@@ -20,7 +20,6 @@ class Note
 	sf::SoundBuffer playSoundBuffer;
 	sf::Sound playSound;
 
-	sf::Texture textTexture, pressedTextTexture;
 	sf::Sprite textSprite, pressedTextSprite;
 
 	void generateSamples();
@@ -30,7 +29,6 @@ public:
 	double baseFrequency;
 	bool keyPressed;
 
-	sf::Text nameText;
 	char noteLetter;
 	char noteAccidental;
 	int noteOctave;

@@ -1,7 +1,10 @@
 #include "constants.hh"
 #include "conv.hh"
 #include "note.hh"
+#include "textures.hh"
+
 #include <SFML/Graphics.hpp>
+#include <memory>
 
 class MainLoop
 {
@@ -34,6 +37,7 @@ int main()
 	sf::Font font;
 	if (!font.loadFromFile("Comme-Regular.ttf"))
 		return 1;
+	std::unique_ptr<sf::Texture> noteNamesAtlas = textures::CreateNoteTexture(font);
 
 	Note notes[12];
 	for (int i = 0; i < 12; i++) {
@@ -41,7 +45,6 @@ int main()
 		int x = Constants.padding + i*(Constants.rectangle.size + Constants.padding);
 		int y = Globals.windowHeight - Constants.padding - Constants.rectangle.size;
 		notes[i].SetPosition(x, y);
-		notes[i].nameText.setFont(font);
 	}
 
 	notes[ 0].key = sf::Keyboard::Num1;
