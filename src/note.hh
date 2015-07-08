@@ -14,16 +14,14 @@ class Note
 	sf::RectangleShape lineShape;
 	sf::Color
 		color, outlineColor,
-		pressedColor, pressedOutlineColor,
-		textColor, pressedTextColor;
+		pressedColor, pressedOutlineColor;
+	sf::RectangleShape textSprite;
 
 	sf::SoundBuffer playSoundBuffer;
 	sf::Sound playSound;
 
-	sf::Sprite textSprite, pressedTextSprite;
-
 	void generateSamples();
-	void createTextures();
+	void createSprites();
 public:
 	sf::Keyboard::Key key;
 	double baseFrequency;
@@ -37,6 +35,7 @@ public:
 	void SetPosition(int x, int y);
 	void SetHue(int h);
 	void SetNoteName(conv::Name noteName, int octave);
+	void SetTexture(sf::Texture *texture);
 	void Draw(sf::RenderWindow *window);
 	void Update();
 

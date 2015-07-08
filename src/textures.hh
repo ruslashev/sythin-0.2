@@ -4,17 +4,15 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <memory>
+#include <map>
 
 namespace textures {
 
-struct Rect {
-	int x, w, h;
-};
-static std::vector<Rect> positions;
+static std::map<std::string, sf::IntRect> positions;
 
 std::unique_ptr<sf::Texture> CreateNoteTexture(sf::Font &font);
 
-// Rect LookupNotePosition(char letter, char accidental, int octave);
+sf::IntRect LookupNotePosition(char letter, char accidental, int octave);
 
 }
 

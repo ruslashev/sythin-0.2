@@ -45,6 +45,7 @@ int main()
 		int x = Constants.padding + i*(Constants.rectangle.size + Constants.padding);
 		int y = Globals.windowHeight - Constants.padding - Constants.rectangle.size;
 		notes[i].SetPosition(x, y);
+		notes[i].SetTexture(noteNamesAtlas.get());
 	}
 
 	notes[ 0].key = sf::Keyboard::Num1;

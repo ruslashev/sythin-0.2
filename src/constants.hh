@@ -17,13 +17,11 @@ const struct
 		int outlineValue = 78;
 	} rectangle {};
 	struct {
-		int size = 20;
+		int size = 19;
 		int spacing = -1;
-
-		int saturation = 70;
-		int value = 15;
-		int pressedSaturation = 8;
-		int pressedValue = 97;
+		int outline = 4;
+		int colorValue = 15;
+		int backgroundValue = 96;
 	} text {};
 	struct {
 		int thickness = 2;

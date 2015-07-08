@@ -26,11 +26,11 @@ std::unique_ptr<sf::Texture> textures::CreateNoteTexture(sf::Font &font)
 	text.setFont(font);
 	text.setCharacterSize(Constants.text.size);
 
-	sf::Color textColor = conv::HSVtoRGB(0, 0, 10),
-		background = conv::HSVtoRGB(0, 0, 97);
+	sf::Color textColor = conv::HSVtoRGB(0, 0, Constants.text.colorValue),
+		background = conv::HSVtoRGB(0, 0, Constants.text.backgroundValue);
 
 	sf::RenderTexture textRT;
-	if (!textRT.create(1000, 200))
+	if (!textRT.create(1000, 1000))
 		throw;
 	textRT.clear(background);
 
@@ -84,26 +84,24 @@ std::unique_ptr<sf::Texture> textures::CreateNoteTexture(sf::Font &font)
 
 		textRT.display();
 
-		positions.push_back({ counterX,
-				textureSegmentWidth, textureSegmentHeight });
+		std::string noteStr = "";
+		noteStr += note.letter;
+		noteStr += note.accidental;
+		noteStr += std::to_string(note.octave);
+		positions[noteStr] =
+			sf::IntRect(counterX, 0, textureSegmentWidth, textureSegmentHeight);
 		counterX += textureSegmentWidth;
-
-		/*
-		textSprite.setPosition(
-				rectangleShape.getPosition().x +
-				rectangleShape.getLocalBounds().width/2 -
-				textSprite.getLocalBounds().width/2,
-				rectangleShape.getPosition().y +
-				rectangleShape.getLocalBounds().height/2 -
-				textSprite.getLocalBounds().height/2);
-		*/
 	}
 	std::unique_ptr<sf::Texture> noteNamesAtlas(new sf::Texture(textRT.getTexture()));
 	return noteNamesAtlas;
 }
 
-// textures::Rect textures::LookupNotePosition(char letter, char accidental, int octave)
-// {
-
-// }
+sf::IntRect textures::LookupNotePosition(char letter, char accidental, int octave)
+{
+	std::string noteStr = "";
+	noteStr += letter;
+	noteStr += accidental;
+	noteStr += std::to_string(octave);
+	return positions[noteStr];
+}
 
