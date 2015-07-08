@@ -20,8 +20,8 @@ class Note
 	sf::SoundBuffer playSoundBuffer;
 	sf::Sound playSound;
 
-	sf::RenderTexture textRenderTexture;
-	sf::Sprite unpressedTextSprite, pressedTextSprite;
+	sf::RenderTexture textRenderTexture, pressedTextRenderTexture;
+	sf::Sprite textSprite, pressedTextSprite;
 
 	void generateSamples();
 	void createTextures();

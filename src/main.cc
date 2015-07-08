@@ -32,7 +32,7 @@ int main()
 	MainLoop ml;
 
 	sf::Font font;
-	if (!font.loadFromFile("MuseoSans_500.otf"))
+	if (!font.loadFromFile("Comme-Regular.ttf"))
 		return 1;
 
 	Note notes[12];
