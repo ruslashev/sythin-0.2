@@ -6,7 +6,7 @@ bool openFile();
 void writeBuffer();
 
 std::string filename;
-char *buffer;
+unsigned char *buffer;
 size_t fileSize;
 
 int main(int argc, char **argv)
@@ -38,7 +38,7 @@ bool openFile() {
 	fileSize = ftell(f);
 	rewind(f);
 
-	buffer = new char[fileSize];
+	buffer = new unsigned char[fileSize+4];
 	size_t read = fread(buffer, 1, fileSize, f);
 	fclose(f);
 	if (read != fileSize) {
@@ -73,22 +73,22 @@ void writeBuffer()
 	p("#ifndef %s", header_guard.c_str());
 	p("#define %s", header_guard.c_str());
 	p("");
+	p("#include <cstdint>");
+	p("");
 	p("const struct {");
 	p("    unsigned int size;");
-	p("    unsigned char data[%d];", fileSize);
+	p("    uint32_t data[%d/4];", fileSize);
 	p("} %s = {", struct_name.c_str());
 	p("%d,", fileSize);
 
-	std::string linebuf = "\"";
-	for (int i = 0; i < fileSize; i++) {
-		const char b = buffer[i];
-		linebuf += '\\';
-		linebuf += '0' + ((b >> 6) & 7);
-		linebuf += '0' + ((b >> 3) & 7);
-		linebuf += '0' + (b & 7);
-		if (linebuf.length() >= 80) {
-			p("%s\"", linebuf.c_str());
-			linebuf = "\"";
+	int counter = 0;
+	for (int i = 0; i < fileSize; i += 4) {
+		uint32_t d = *(uint32_t*)(buffer + i);
+		fprintf(out, "0x%08x,", d);
+		counter++;
+		if (counter > 10) {
+			p("");
+			counter = 0;
 		}
 	}
 	p("};");
