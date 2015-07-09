@@ -4,6 +4,7 @@
 #include "textures.hh"
 
 #include <SFML/Graphics.hpp>
+#include <SFML/System.hpp>
 #include <memory>
 
 class MainLoop
@@ -11,6 +12,8 @@ class MainLoop
 public:
 	sf::RenderWindow window;
 	sf::Event event;
+	sf::Time simulatedTime;
+	sf::Clock clock;
 	MainLoop() {
 		sf::ContextSettings settings;
 		settings.antialiasingLevel = Constants.antialiasing;
@@ -75,31 +78,35 @@ int main()
 	notes[11].SetNoteName(conv::Gs, 3);
 
 	while (ml.Update()) {
-		while (ml.window.pollEvent(ml.event)) {
-			if (ml.event.type == sf::Event::Closed)
-				ml.window.close();
-			if (ml.event.type == sf::Event::KeyPressed)
-				for (int i = 0; i < 12; i++)
-					if (ml.event.key.code == notes[i].key) {
-						notes[i].keyPressed = true;
-						notes[i].KeyPressed();
-					}
-			if (ml.event.type == sf::Event::KeyReleased)
-				for (int i = 0; i < 12; i++)
-					if (ml.event.key.code == notes[i].key) {
-						notes[i].keyPressed = false;
-						notes[i].KeyReleased();
-					}
+		sf::Time realTime = ml.clock.getElapsedTime();
+		while (ml.simulatedTime < realTime) {
+			while (ml.window.pollEvent(ml.event)) {
+				if (ml.event.type == sf::Event::Closed)
+					ml.window.close();
+				if (ml.event.type == sf::Event::KeyPressed)
+					for (int i = 0; i < 12; i++)
+						if (ml.event.key.code == notes[i].key) {
+							notes[i].keyPressed = true;
+							notes[i].KeyPressed();
+						}
+				if (ml.event.type == sf::Event::KeyReleased)
+					for (int i = 0; i < 12; i++)
+						if (ml.event.key.code == notes[i].key) {
+							notes[i].keyPressed = false;
+							notes[i].KeyReleased();
+						}
+			}
+			for (int i = 0; i < 12; i++) {
+				notes[i].Update();
+			}
+			ml.simulatedTime += sf::milliseconds(16);
 		}
 
 		for (int i = 0; i < 12; i++) {
-			notes[i].Update();
 			notes[i].Draw(&ml.window);
 		}
 
 		ml.Display();
-
-        sf::sleep(sf::milliseconds(100));
 	}
 
 	return 0;

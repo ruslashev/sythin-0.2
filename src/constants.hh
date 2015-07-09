@@ -5,6 +5,7 @@
 
 const struct
 {
+	int updateMilliseconds = 16;
 	int antialiasing = 6;
 	struct {
 		int size = 50;
