@@ -52,18 +52,18 @@ int main()
 		return bzerror;
 		*/
 
-	char *fontDataBuffer = new char [_MesloLGMRegular_ttf.size];
+	std::unique_ptr<char> fontDataBuffer(new char [_MesloLGMRegular_ttf.size]);
 	int fontDataBufferCounter = 0;
-	const char *data_ptr = _MesloLGMRegular_ttf.data;
-	for (size_t i = 0; i < _MesloLGMRegular_ttf.size; i += 2) {
-		std::string byte = "";
-		byte += data_ptr[i];
-		byte += data_ptr[i+1];
-		fontDataBuffer[fontDataBufferCounter++] = std::stoi(byte, NULL, 16);
+	for (size_t i = 0; i < _MesloLGMRegular_ttf.size*2; i += 2) {
+		std::string byte = {
+			_MesloLGMRegular_ttf.data[i],
+			_MesloLGMRegular_ttf.data[i+1],
+			'\0' };
+		fontDataBuffer.get()[fontDataBufferCounter++] = std::stoi(byte, NULL, 16);
 	}
 
 	sf::Font font;
-	if (!font.loadFromMemory(fontDataBuffer, _MesloLGMRegular_ttf.size))
+	if (!font.loadFromMemory(fontDataBuffer.get(), _MesloLGMRegular_ttf.size))
 		return 1;
 	std::unique_ptr<sf::Texture> noteNamesAtlas = textures::CreateNoteTexture(font);
 

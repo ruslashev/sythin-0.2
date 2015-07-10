@@ -88,15 +88,11 @@ void writeBuffer(char *buffer, size_t size)
 		c = toupper(c);
 	header_guard += "_HH";
 
-	const int bytes_per_line = 60;
-
 	FILE *out = stdout;
 #define p(...) fprintf(out, __VA_ARGS__); fprintf(out, "\n")
 	p("// Binary file embedded as C source using file_to_c_source.cc");
 	p("#ifndef %s", header_guard.c_str());
 	p("#define %s", header_guard.c_str());
-	p("");
-	p("#define FTCC_BYTES_PER_LINE %d", bytes_per_line);
 	p("");
 	p("const struct {");
 	p("    unsigned int size;");
@@ -110,7 +106,7 @@ void writeBuffer(char *buffer, size_t size)
 		unsigned char d = buffer[i];
 		fprintf(out, "%02x", d);
 		counter++;
-		if (counter >= bytes_per_line) {
+		if (counter >= 70) {
 			p("\"");
 			counter = 0;
 			fprintf(out, "\"");
