@@ -4,13 +4,14 @@
 #include <fstream>
 #include <string>
 #include <algorithm>
+#include <cstdint>
 #include "bzip2-1.0.6/bzlib.h"
 
 bool openFile();
 void writeBuffer();
 
 std::string filename;
-unsigned char *buffer;
+char *buffer;
 size_t fileSize;
 
 int main(int argc, char **argv)
@@ -33,7 +34,7 @@ int main(int argc, char **argv)
 	fileSize = ftell(f);
 	rewind(f);
 
-	buffer = new unsigned char[fileSize];
+	buffer = new char[fileSize];
 	size_t read = fread(buffer, 1, fileSize, f);
 	if (read != fileSize) {
 		puts("failed to read file");
@@ -42,36 +43,24 @@ int main(int argc, char **argv)
 		return 1;
 	}
 
-	BZFILE *bzf;
-	int bzerror;
-	bzf = BZ2_bzReadOpen(&bzerror, f, 0, 0, NULL, 0);
-	if (bzerror != BZ_OK) {
-		fprintf(stderr, "E: BZ2_bzReadOpen: %d\n", bzerror);
-		delete [] buffer;
-		fclose(f);
-		return 1;
-	}
+	char *compressed = new char [fileSize];
+	unsigned int compSize = fileSize;
+	int bzerror = BZ2_bzBuffToBuffCompress(compressed,
+			&compSize,
+			buffer,
+			fileSize,
+			9,
+			0,
+			250);
+	if (bzerror != BZ_OK)
+		return bzerror;
 
-	char buf[2 * 1024 * 1024];
-	while (bzerror == BZ_OK) {
-		int nread = BZ2_bzRead(&bzerror, bzf, buf, sizeof(buf));
-		if (bzerror == BZ_OK || bzerror == BZ_STREAM_END) {
-			size_t nwritten = fwrite(buf, 1, nread, stdout);
-			if (nwritten != (size_t) nread) {
-				fprintf(stderr, "E: short write\n");
-				return 1;
-				delete [] buffer;
-				fclose(f);
-			}
-		}
-	}
-
-	if (bzerror != BZ_STREAM_END) {
-		fprintf(stderr, "E: bzip error after read: %d\n", bzerror);
-		return -1;
-	}
-
-	BZ2_bzReadClose(&bzerror, bzf);
+	delete [] buffer;
+	buffer = new char[compSize+4];
+	fileSize = compSize;
+	for (int i = 0; i < compSize; i++)
+		buffer[i] = compressed[i];
+	delete [] compressed;
 
 	writeBuffer();
 
