@@ -8,7 +8,7 @@
 #include "bzip2-1.0.6/bzlib.h"
 
 bool openFile();
-void writeBuffer();
+void writeBuffer(char *buffer, size_t size);
 
 std::string filename;
 char *buffer;
@@ -43,6 +43,7 @@ int main(int argc, char **argv)
 		return 1;
 	}
 
+	/*
 	char *compressed = new char [fileSize];
 	unsigned int compSize = fileSize;
 	int bzerror = BZ2_bzBuffToBuffCompress(compressed,
@@ -61,14 +62,15 @@ int main(int argc, char **argv)
 	for (int i = 0; i < compSize; i++)
 		buffer[i] = compressed[i];
 	delete [] compressed;
+	*/
 
-	writeBuffer();
+	writeBuffer(buffer, fileSize);
 
 	delete [] buffer;
 	return 0;
 }
 
-void writeBuffer()
+void writeBuffer(char *buffer, size_t size)
 {
 	std::string struct_name = "_";
 	for (auto &c : filename)
@@ -86,32 +88,36 @@ void writeBuffer()
 		c = toupper(c);
 	header_guard += "_HH";
 
+	const int bytes_per_line = 60;
+
 	FILE *out = stdout;
 #define p(...) fprintf(out, __VA_ARGS__); fprintf(out, "\n")
 	p("// Binary file embedded as C source using file_to_c_source.cc");
 	p("#ifndef %s", header_guard.c_str());
 	p("#define %s", header_guard.c_str());
 	p("");
-	p("#include <cstdint>");
+	p("#define FTCC_BYTES_PER_LINE %d", bytes_per_line);
 	p("");
 	p("const struct {");
 	p("    unsigned int size;");
-	p("    uint32_t data[%d/4];", fileSize);
+	p("    char data[%d*2+1];", size);
 	p("} %s = {", struct_name.c_str());
-	p("%d,", fileSize);
+	p("%d,", size);
 
 	int counter = 0;
-	for (int i = 0; i < fileSize; i += 4) {
-		uint32_t d = *(uint32_t*)(buffer + i);
-		fprintf(out, "0x%08x,", d);
+	fprintf(out, "\"");
+	for (int i = 0; i < size; i++) {
+		unsigned char d = buffer[i];
+		fprintf(out, "%02x", d);
 		counter++;
-		if (counter > 10) {
-			p("");
+		if (counter >= bytes_per_line) {
+			p("\"");
 			counter = 0;
+			fprintf(out, "\"");
 		}
 	}
 
-	p("};");
+	p("\"\n};");
 	p("");
 	p("#endif");
 }

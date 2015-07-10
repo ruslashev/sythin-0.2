@@ -39,6 +39,7 @@ int main()
 {
 	MainLoop ml;
 
+	/*
 	unsigned int uncompSize = 5 * 1024 * 1024;
 	char *fontUncomp = new char [uncompSize];
 	int bzerror = BZ2_bzBuffToBuffDecompress(fontUncomp,
@@ -49,9 +50,20 @@ int main()
 			0);
 	if (bzerror != BZ_OK)
 		return bzerror;
+		*/
+
+	char *fontDataBuffer = new char [_MesloLGMRegular_ttf.size];
+	int fontDataBufferCounter = 0;
+	const char *data_ptr = _MesloLGMRegular_ttf.data;
+	for (size_t i = 0; i < _MesloLGMRegular_ttf.size; i += 2) {
+		std::string byte = "";
+		byte += data_ptr[i];
+		byte += data_ptr[i+1];
+		fontDataBuffer[fontDataBufferCounter++] = std::stoi(byte, NULL, 16);
+	}
 
 	sf::Font font;
-	if (!font.loadFromMemory(fontUncomp, uncompSize))
+	if (!font.loadFromMemory(fontDataBuffer, _MesloLGMRegular_ttf.size))
 		return 1;
 	std::unique_ptr<sf::Texture> noteNamesAtlas = textures::CreateNoteTexture(font);
 
