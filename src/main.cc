@@ -99,7 +99,7 @@ int main()
 			for (int i = 0; i < 12; i++) {
 				notes[i].Update();
 			}
-			ml.simulatedTime += sf::milliseconds(16);
+			ml.simulatedTime += sf::milliseconds(Constants.updateMilliseconds);
 		}
 
 		for (int i = 0; i < 12; i++) {

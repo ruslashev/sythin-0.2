@@ -1,6 +1,10 @@
+/* file_to_c_source - tool to embed binary files as C source code
+ */
+
 #include <fstream>
 #include <string>
 #include <algorithm>
+#include "bzip2-1.0.6/bzlib.h"
 
 bool openFile();
 void writeBuffer();
@@ -13,40 +17,66 @@ int main(int argc, char **argv)
 {
 	if (argc < 2) {
 		printf("Usage: %s <file>\n", argv[0]);
+		printf("Prints resulting code to stdout\n");
 		return 1;
 	}
 
 	filename = argv[1];
 
-	if (!openFile())
-		return 1;
-
-	writeBuffer();
-
-	delete [] buffer;
-	return 0;
-}
-
-bool openFile() {
 	FILE *f = fopen(filename.c_str(), "rb");
 	if (!f) {
-		puts("failed to open file for reading");
-		return false;
+		puts("Failed to open file for reading");
+		return 1;
 	}
 
 	fseek(f, 0, SEEK_END);
 	fileSize = ftell(f);
 	rewind(f);
 
-	buffer = new unsigned char[fileSize+4];
+	buffer = new unsigned char[fileSize];
 	size_t read = fread(buffer, 1, fileSize, f);
-	fclose(f);
 	if (read != fileSize) {
 		puts("failed to read file");
 		delete [] buffer;
-		return false;
+		fclose(f);
+		return 1;
 	}
-	return true;
+
+	BZFILE *bzf;
+	int bzerror;
+	bzf = BZ2_bzReadOpen(&bzerror, f, 0, 0, NULL, 0);
+	if (bzerror != BZ_OK) {
+		fprintf(stderr, "E: BZ2_bzReadOpen: %d\n", bzerror);
+		delete [] buffer;
+		fclose(f);
+		return 1;
+	}
+
+	char buf[2 * 1024 * 1024];
+	while (bzerror == BZ_OK) {
+		int nread = BZ2_bzRead(&bzerror, bzf, buf, sizeof(buf));
+		if (bzerror == BZ_OK || bzerror == BZ_STREAM_END) {
+			size_t nwritten = fwrite(buf, 1, nread, stdout);
+			if (nwritten != (size_t) nread) {
+				fprintf(stderr, "E: short write\n");
+				return 1;
+				delete [] buffer;
+				fclose(f);
+			}
+		}
+	}
+
+	if (bzerror != BZ_STREAM_END) {
+		fprintf(stderr, "E: bzip error after read: %d\n", bzerror);
+		return -1;
+	}
+
+	BZ2_bzReadClose(&bzerror, bzf);
+
+	writeBuffer();
+
+	delete [] buffer;
+	return 0;
 }
 
 void writeBuffer()
@@ -91,6 +121,7 @@ void writeBuffer()
 			counter = 0;
 		}
 	}
+
 	p("};");
 	p("");
 	p("#endif");
