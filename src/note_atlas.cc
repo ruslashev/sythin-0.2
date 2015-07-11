@@ -1,13 +1,14 @@
-#include "textures.hh"
 #include "constants.hh"
 #include "conv.hh"
+#include "note_atlas.hh"
 
-std::unique_ptr<sf::Texture> textures::CreateNoteTexture(sf::Font &font)
+static std::map<std::string, sf::IntRect> positions;
+
+bool note_atlas::CreateNoteTexture(sf::Font &font, sf::Texture *texture)
 {
-	const int precomputedOctaves = 5;
 	struct noteSymbol { char letter, accidental; int octave; };
 	std::vector<noteSymbol> noteNames;
-	for (int i = 0; i < precomputedOctaves; i++) {
+	for (int i = 0; i < Constants.noteAtlas.precomputedOctaves; i++) {
 		noteNames.push_back({ 'A', ' ', i+1 });
 		noteNames.push_back({ 'A', '#', i+1 });
 		noteNames.push_back({ 'B', ' ', i+1 });
@@ -30,8 +31,8 @@ std::unique_ptr<sf::Texture> textures::CreateNoteTexture(sf::Font &font)
 		background = conv::HSVtoRGB(0, 0, Constants.text.backgroundValue);
 
 	sf::RenderTexture textRT;
-	if (!textRT.create(1000, 1000))
-		throw;
+	if (!textRT.create(Constants.noteAtlas.width, Constants.noteAtlas.height))
+		return false;
 	textRT.clear(background);
 
 	int counterX = 0;
@@ -92,11 +93,11 @@ std::unique_ptr<sf::Texture> textures::CreateNoteTexture(sf::Font &font)
 			sf::IntRect(counterX, 0, textureSegmentWidth, textureSegmentHeight);
 		counterX += textureSegmentWidth;
 	}
-	std::unique_ptr<sf::Texture> noteNamesAtlas(new sf::Texture(textRT.getTexture()));
-	return noteNamesAtlas;
+	*texture = textRT.getTexture();
+	return true;
 }
 
-sf::IntRect textures::LookupNotePosition(char letter, char accidental, int octave)
+sf::IntRect note_atlas::LookupNotePosition(char letter, char accidental, int octave)
 {
 	std::string noteStr = "";
 	noteStr += letter;

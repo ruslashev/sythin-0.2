@@ -30,6 +30,11 @@ const struct
 		sf::Color color = sf::Color(30, 30, 30);
 	} line {};
 	int padding = 10;
+	struct {
+		int precomputedOctaves = 6;
+		int width = 4000;
+		int height = 500;
+	} noteAtlas {};
 
 	int channels = 1;
 	int samplesPerSecond = 44100;

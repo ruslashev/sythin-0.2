@@ -2,7 +2,7 @@
 
 #include "constants.hh"
 #include "conv.hh"
-#include "textures.hh"
+#include "note_atlas.hh"
 
 Note::Note()
 {
@@ -40,7 +40,7 @@ void Note::generateSamples()
 
 void Note::createSprites()
 {
-	sf::IntRect rect = textures::LookupNotePosition(noteLetter,
+	sf::IntRect rect = note_atlas::LookupNotePosition(noteLetter,
 				noteAccidental, noteOctave);
 	textSprite.setSize(sf::Vector2f(rect.width, rect.height));
 	textSprite.setTextureRect(rect);

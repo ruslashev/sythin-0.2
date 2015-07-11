@@ -14,7 +14,7 @@ bool loadEmbeddedFont(sf::Font *font, std::unique_ptr<char> *uncompBuffer,
 	for (size_t i = 0; i < size*2; i += 2) {
 		const char byte[3] = { compData[i], compData[i+1], '\0' };
 		compressedBuffer.get()[compressedBufferCounter++] =
-			strtol(byte, NULL, 16);
+			strtol(byte, nullptr, 16);
 	}
 
 	unsigned int uncompSize = Constants.fontSizeGuess;

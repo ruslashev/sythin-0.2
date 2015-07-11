@@ -1,7 +1,7 @@
 #include "constants.hh"
 #include "conv.hh"
 #include "note.hh"
-#include "textures.hh"
+#include "note_atlas.hh"
 #include "font.hh"
 #include "fontloader.hh"
 
@@ -43,9 +43,12 @@ int main()
 	sf::Font font;
 	std::unique_ptr<char> fontFileBuffer;
 	if (!loadEmbeddedFont(&font, &fontFileBuffer,
-				_MesloLGMRegular_ttf.data, _MesloLGMRegular_ttf.size))
+				_CommeLight_ttf.data, _CommeLight_ttf.size))
 		return 1;
-	std::unique_ptr<sf::Texture> noteNamesAtlas = textures::CreateNoteTexture(font);
+
+	sf::Texture noteNamesAtlas;
+	if (!note_atlas::CreateNoteTexture(font, &noteNamesAtlas))
+		return 1;
 
 	Note notes[3][12];
 	for (int r = 0; r < 3; r++)
@@ -55,7 +58,7 @@ int main()
 			int y = Globals.windowHeight - Constants.padding - Constants.rectangle.size -
 				(3-r-1)*(Constants.rectangle.size + Constants.padding);
 			notes[r][i].SetPosition(x, y);
-			notes[r][i].SetTexture(noteNamesAtlas.get());
+			notes[r][i].SetTexture(&noteNamesAtlas);
 		}
 
 	notes[0][ 0].key = sf::Keyboard::Num1;
