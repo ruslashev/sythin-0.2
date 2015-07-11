@@ -84,7 +84,7 @@ void writeBuffer(char *buffer, size_t size)
 	p("#ifndef %s", header_guard.c_str());
 	p("#define %s", header_guard.c_str());
 	p("");
-	p("const struct {");
+	p("static const struct {");
 	p("    unsigned int size;");
 	p("    char data[%d*2+1];", size);
 	p("} %s = {", struct_name.c_str());
