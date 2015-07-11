@@ -1,5 +1,4 @@
-/* file_to_c_source - tool to embed binary files as C source code
- */
+// file_to_c_source - tool to embed binary files as C source code
 
 #include <fstream>
 #include <string>
@@ -107,5 +106,6 @@ void writeBuffer(char *buffer, size_t size)
 	p("\"\n};");
 	p("");
 	p("#endif");
+	p("");
 }
 

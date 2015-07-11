@@ -41,7 +41,9 @@ int main()
 	MainLoop ml;
 
 	sf::Font font;
-	if (!loadEmbeddedFont(&font, _MesloLGMRegular_ttf.data, _MesloLGMRegular_ttf.size))
+	std::unique_ptr<char> fontFileBuffer;
+	if (!loadEmbeddedFont(&font, &fontFileBuffer,
+				_MesloLGMRegular_ttf.data, _MesloLGMRegular_ttf.size))
 		return 1;
 	std::unique_ptr<sf::Texture> noteNamesAtlas = textures::CreateNoteTexture(font);
 

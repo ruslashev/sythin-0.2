@@ -3,7 +3,8 @@
 
 #include <SFML/Graphics.hpp>
 
-bool loadEmbeddedFont(sf::Font *font, const char *data, unsigned int size);
+bool loadEmbeddedFont(sf::Font *font, std::unique_ptr<char> *uncompBuffer,
+		const char *compData, unsigned int size);
 
 #endif
 
