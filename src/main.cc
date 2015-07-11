@@ -3,11 +3,12 @@
 #include "note.hh"
 #include "textures.hh"
 #include "font.hh"
+#include "fontloader.hh"
 
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
-#include <memory>
 #include "../bzip2-1.0.6/bzlib.h"
+#include <memory>
 
 class MainLoop
 {
@@ -39,31 +40,8 @@ int main()
 {
 	MainLoop ml;
 
-	/*
-	unsigned int uncompSize = 5 * 1024 * 1024;
-	char *fontUncomp = new char [uncompSize];
-	int bzerror = BZ2_bzBuffToBuffDecompress(fontUncomp,
-			&uncompSize,
-			(char*)_MesloLGMRegular_ttf.data,
-			_MesloLGMRegular_ttf.size,
-			0,
-			0);
-	if (bzerror != BZ_OK)
-		return bzerror;
-		*/
-
-	std::unique_ptr<char> fontDataBuffer(new char [_MesloLGMRegular_ttf.size]);
-	int fontDataBufferCounter = 0;
-	for (size_t i = 0; i < _MesloLGMRegular_ttf.size*2; i += 2) {
-		std::string byte = {
-			_MesloLGMRegular_ttf.data[i],
-			_MesloLGMRegular_ttf.data[i+1],
-			'\0' };
-		fontDataBuffer.get()[fontDataBufferCounter++] = std::stoi(byte, NULL, 16);
-	}
-
 	sf::Font font;
-	if (!font.loadFromMemory(fontDataBuffer.get(), _MesloLGMRegular_ttf.size))
+	if (!loadEmbeddedFont(&font, _MesloLGMRegular_ttf.data, _MesloLGMRegular_ttf.size))
 		return 1;
 	std::unique_ptr<sf::Texture> noteNamesAtlas = textures::CreateNoteTexture(font);
 

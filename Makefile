@@ -39,7 +39,7 @@ clean:
 	rm -rf $(OBJS)
 
 ftcc:
-	g++ file_to_c_source.cc -std=c++0x -o ftcc
+	g++ file_to_c_source.cc $(BZIP_SRCS) -std=c++0x -o ftcc $(CCFLAGS)
 	./ftcc *.ttf > src/font.hh
 	rm ftcc
 

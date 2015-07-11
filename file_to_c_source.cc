@@ -36,37 +36,29 @@ int main(int argc, char **argv)
 
 	buffer = new char[fileSize];
 	size_t read = fread(buffer, 1, fileSize, f);
+	fclose(f);
 	if (read != fileSize) {
 		puts("failed to read file");
 		delete [] buffer;
-		fclose(f);
 		return 1;
 	}
 
-	/*
 	char *compressed = new char [fileSize];
 	unsigned int compSize = fileSize;
-	int bzerror = BZ2_bzBuffToBuffCompress(compressed,
-			&compSize,
-			buffer,
-			fileSize,
+	int bzerror = BZ2_bzBuffToBuffCompress(
+			compressed, &compSize,
+			buffer, fileSize,
 			9,
 			0,
 			250);
 	if (bzerror != BZ_OK)
 		return bzerror;
 
+	writeBuffer(compressed, compSize);
+
 	delete [] buffer;
-	buffer = new char[compSize+4];
-	fileSize = compSize;
-	for (int i = 0; i < compSize; i++)
-		buffer[i] = compressed[i];
 	delete [] compressed;
-	*/
 
-	writeBuffer(buffer, fileSize);
-
-	delete [] buffer;
 	return 0;
 }
 
@@ -81,7 +73,6 @@ void writeBuffer(char *buffer, size_t size)
 			 (c >= 'A' && c <= 'Z') ||
 			 (c >= 'a' && c <= 'z'))
 				struct_name += c;
-	// struct_name += "_data";
 
 	std::string header_guard = struct_name;
 	for (auto &c : header_guard)
