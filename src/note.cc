@@ -10,10 +10,10 @@ Note::Note()
 				Constants.rectangle.size, Constants.rectangle.size));
 	rectangleShape.setOutlineThickness(Constants.rectangle.outline);
 
-	lineShape.setSize(sf::Vector2f(
-				Constants.line.thickness,
-				Globals.windowHeight - Constants.padding*2));
-	lineShape.setFillColor(Constants.line.color);
+	// lineShape.setSize(sf::Vector2f(
+	// 			Constants.line.thickness,
+	// 			Globals.windowHeight - Constants.padding*2));
+	// lineShape.setFillColor(Constants.line.color);
 	keyPressed = false;
 }
 
@@ -60,7 +60,7 @@ void Note::createSprites()
 void Note::SetPosition(int x, int y)
 {
 	rectangleShape.setPosition(x, y);
-	lineShape.setPosition(x + Constants.rectangle.size/2, Constants.padding);
+	// lineShape.setPosition(x + Constants.rectangle.size/2, Constants.padding);
 }
 
 void Note::SetHue(int h)
@@ -111,6 +111,7 @@ void Note::SetNoteName(conv::Name noteName, int octave)
 	}
 	noteOctave = octave;
 	createSprites();
+	printf("%c%c%d: %f\n", noteLetter, noteAccidental, noteOctave, baseFrequency);
 }
 
 void Note::SetTexture(sf::Texture *texture)
@@ -120,7 +121,7 @@ void Note::SetTexture(sf::Texture *texture)
 
 void Note::Draw(sf::RenderWindow *window)
 {
-	window->draw(lineShape);
+	// window->draw(lineShape);
 
 	if (keyPressed) {
 		rectangleShape.setFillColor(pressedColor);

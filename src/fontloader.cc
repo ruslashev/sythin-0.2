@@ -9,11 +9,11 @@ void printBzipError(int bzerror);
 bool loadEmbeddedFont(sf::Font *font, std::unique_ptr<char> *uncompBuffer,
 		const char *compData, unsigned int size)
 {
-	std::unique_ptr<char> compressedBuffer(new char [size]);
+	char *compressedBuffer = new char [size];
 	int compressedBufferCounter = 0;
 	for (size_t i = 0; i < size*2; i += 2) {
 		const char byte[3] = { compData[i], compData[i+1], '\0' };
-		compressedBuffer.get()[compressedBufferCounter++] =
+		compressedBuffer[compressedBufferCounter++] =
 			strtol(byte, nullptr, 16);
 	}
 
@@ -21,12 +21,14 @@ bool loadEmbeddedFont(sf::Font *font, std::unique_ptr<char> *uncompBuffer,
 	*uncompBuffer = std::unique_ptr<char>(new char [uncompSize]);
 	int bzerror = BZ2_bzBuffToBuffDecompress(
 			uncompBuffer->get(), &uncompSize,
-			compressedBuffer.get(), size,
+			compressedBuffer, size,
 			0, 0);
 	if (bzerror != BZ_OK) {
 		printBzipError(bzerror);
 		return false;
 	}
+
+	delete [] compressedBuffer;
 
 	if (!font->loadFromMemory(uncompBuffer->get(), uncompSize))
 		return false;

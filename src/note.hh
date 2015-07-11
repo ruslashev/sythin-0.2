@@ -11,7 +11,7 @@
 class Note
 {
 	sf::RectangleShape rectangleShape;
-	sf::RectangleShape lineShape;
+	// sf::RectangleShape lineShape;
 	sf::Color
 		color, outlineColor,
 		pressedColor, pressedOutlineColor;
