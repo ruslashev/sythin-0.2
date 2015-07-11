@@ -4,12 +4,10 @@
 #include <SFML/Graphics.hpp>
 
 namespace conv {
+
 sf::Color HSVtoRGB(int h_abs, int s_abs, int v_abs);
 
 enum Name {
-	A,
-	As,
-	B,
 	C,
 	Cs,
 	D,
@@ -18,9 +16,13 @@ enum Name {
 	F,
 	Fs,
 	G,
-	Gs
+	Gs,
+	A,
+	As,
+	B,
 };
 double NoteNameToFreq(Name name, int octave);
+
 }
 
 #endif
