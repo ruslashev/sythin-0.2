@@ -28,7 +28,7 @@ public:
 		window.setKeyRepeatEnabled(false);
 	};
 	bool Update() {
-		window.clear(sf::Color::Black);
+		window.clear(Constants.backgroundColor);
 		return window.isOpen();
 	}
 	void Display() {

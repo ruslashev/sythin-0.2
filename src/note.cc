@@ -20,14 +20,17 @@ Note::Note()
 void Note::generateSamples()
 {
 	sf::Int16 playSamples[Constants.samplesPerSecond];
+	double omega = 2*M_PI*baseFrequency;
+	double period = 1 / baseFrequency;
+	unsigned int samples = period*Constants.samplesPerSecond;
 	double x = 0;
-	for (int i = 0; i < Constants.samplesPerSecond; i++) {
-		playSamples[i] = Globals.volume * sin(M_PI*2*x);
-		x += baseFrequency/Constants.samplesPerSecond;
+	for (unsigned int i = 0; i < samples; i++) {
+		playSamples[i] = exp(100.0*1.0/baseFrequency)*Globals.volume * sin(omega*x);
+		x += 1.0/Constants.samplesPerSecond;
 	}
 
 	if (!playSoundBuffer.loadFromSamples(playSamples,
-				Constants.samplesPerSecond,
+				samples,
 				Constants.channels,
 				Constants.samplesPerSecond)) {
 		puts("Failed to copy sound buffer");
@@ -35,7 +38,6 @@ void Note::generateSamples()
 	}
 
 	playSound.setBuffer(playSoundBuffer);
-	playSound.setLoop(true);
 }
 
 void Note::createSprites()
@@ -111,7 +113,6 @@ void Note::SetNoteName(conv::Name noteName, int octave)
 	}
 	noteOctave = octave;
 	createSprites();
-	printf("%c%c%d: %f\n", noteLetter, noteAccidental, noteOctave, baseFrequency);
 }
 
 void Note::SetTexture(sf::Texture *texture)
@@ -142,11 +143,12 @@ void Note::Update()
 
 void Note::KeyPressed()
 {
+	playSound.setLoop(true);
 	playSound.play();
 }
 
 void Note::KeyReleased()
 {
-	playSound.stop();
+	playSound.setLoop(false);
 }
 

@@ -8,6 +8,8 @@ const struct
 	int updateMilliseconds = 16;
 	int antialiasing = 6;
 	unsigned int fontSizeGuess = 10 * 1024 * 1024;
+
+	sf::Color backgroundColor = sf::Color(16, 16, 16);
 	struct {
 		int size = 50;
 		int outline = -2;
