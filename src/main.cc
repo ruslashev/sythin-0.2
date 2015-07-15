@@ -5,10 +5,12 @@
 #include "font.hh"
 #include "fontloader.hh"
 
+#include <SFML/OpenGL.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include "../bzip2-1.0.6/bzlib.h"
 #include <memory>
+#include "../imgui/imgui.h"
 
 class MainLoop
 {
@@ -20,8 +22,7 @@ public:
 	MainLoop() {
 		sf::ContextSettings settings;
 		settings.antialiasingLevel = Constants.antialiasing;
-		window.create(
-				sf::VideoMode(Globals.windowWidth, Globals.windowHeight),
+		window.create(sf::VideoMode(Globals.windowWidth, Globals.windowHeight),
 				"sythin2",
 				sf::Style::Titlebar | sf::Style::Close,
 				settings);
@@ -45,6 +46,10 @@ int main()
 	if (!loadEmbeddedFont(&font, &fontFileBuffer,
 				_CommeLight_ttf.data, _CommeLight_ttf.size))
 		return 1;
+
+	ImGuiIO& io = ImGui::GetIO();
+	io.DisplaySize = ImVec2(Globals.windowWidth, Globals.windowHeight);
+	io.RenderDrawListsFn = ImImpl::ImImpl_RenderDrawLists;
 
 	sf::Texture noteNamesAtlas;
 	if (!note_atlas::CreateNoteTexture(font, &noteNamesAtlas))
@@ -163,9 +168,13 @@ int main()
 			ml.simulatedTime += sf::milliseconds(Constants.updateMilliseconds);
 		}
 
+		ml.window.pushGLStates();
+
 		for (int r = 0; r < 3; r++)
 			for (int i = 0; i < 12; i++)
 				notes[r][i].Draw(&ml.window);
+
+		ml.window.popGLStates();
 
 		ml.Display();
 	}

@@ -25,7 +25,8 @@ void Note::generateSamples()
 	unsigned int samples = period*Constants.samplesPerSecond;
 	double x = 0;
 	for (unsigned int i = 0; i < samples; i++) {
-		playSamples[i] = exp(100.0*1.0/baseFrequency)*Globals.volume * sin(omega*x);
+		// double freqCompensation = exp(100.0*1.0/baseFrequency);
+		playSamples[i] = Globals.volume * sin(omega*x);
 		x += 1.0/Constants.samplesPerSecond;
 	}
 

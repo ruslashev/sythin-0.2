@@ -41,14 +41,19 @@ const struct
 	int channels = 1;
 	int samplesPerSecond = 44100;
 	double stdTuning = 440;
+
+	int notesViewWidth =
+		padding +
+		12*(rectangle.size + padding);
+	struct {
+		int width = 600;
+	} gui {};
 } Constants {};
 
 struct
 {
-	int windowWidth =
-		Constants.padding +
-		12*(Constants.padding + Constants.rectangle.size);
-	int windowHeight = windowWidth;
+	int windowWidth = Constants.notesViewWidth + Constants.gui.width;
+	int windowHeight = 700;
 	int volume = 5000;
 } Globals {};
 
