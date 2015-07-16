@@ -5,12 +5,13 @@
 #include "font.hh"
 #include "fontloader.hh"
 
+#include <GL/glew.h>
 #include <SFML/OpenGL.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include "../bzip2-1.0.6/bzlib.h"
-#include <memory>
 #include "../imgui/imgui.h"
+#include <memory>
 
 class MainLoop
 {
@@ -21,7 +22,11 @@ public:
 	sf::Clock clock;
 	MainLoop() {
 		sf::ContextSettings settings;
+		settings.depthBits = 24;
+		settings.stencilBits = 8;
 		settings.antialiasingLevel = Constants.antialiasing;
+		settings.majorVersion = 2;
+		settings.minorVersion = 1;
 		window.create(sf::VideoMode(Globals.windowWidth, Globals.windowHeight),
 				"sythin2",
 				sf::Style::Titlebar | sf::Style::Close,
@@ -47,9 +52,9 @@ int main()
 				_CommeLight_ttf.data, _CommeLight_ttf.size))
 		return 1;
 
-	ImGuiIO& io = ImGui::GetIO();
-	io.DisplaySize = ImVec2(Globals.windowWidth, Globals.windowHeight);
-	io.RenderDrawListsFn = ImImpl::ImImpl_RenderDrawLists;
+	// ImGuiIO& io = ImGui::GetIO();
+	// io.DisplaySize = ImVec2(Globals.windowWidth, Globals.windowHeight);
+	// io.RenderDrawListsFn = ImImpl::ImImpl_RenderDrawLists;
 
 	sf::Texture noteNamesAtlas;
 	if (!note_atlas::CreateNoteTexture(font, &noteNamesAtlas))
@@ -141,6 +146,74 @@ int main()
 	notes[2][10].SetNoteName(conv::As, 2);
 	notes[2][11].SetNoteName(conv::B,  2);
 
+	const GLchar* vertexSource =
+		"#version 120\n"
+		"attribute vec2 position;\n"
+		"void main() {\n"
+		"   gl_Position = vec4(position, 0.0, 1.0);\n"
+		"}";
+	const GLchar* fragmentSource =
+		"#version 120\n"
+		"void main() {\n"
+		"   gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);\n"
+		"}\n";
+
+	// Initialize GLEW
+	int err = glewInit();
+	if (err != GLEW_OK) {
+		printf("%s\n", glewGetErrorString(err));
+		return 1;
+	}
+
+	// Create a Vertex Buffer Object and copy the vertex data to it
+	GLuint vbo;
+	glGenBuffers(1, &vbo);
+
+	GLfloat vertices[] = {
+		0.0f, 0.5f,
+		0.5f, -0.5f,
+		-0.5f, -0.5f
+	};
+
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(vertexShader, 1, &vertexSource, NULL);
+	glCompileShader(vertexShader);
+
+	GLint status;
+
+	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &status);
+	if (status == GL_FALSE) {
+		char buffer[512];
+		glGetShaderInfoLog(vertexShader, 512, NULL, buffer);
+		printf("Failed to compile vertex shader:\n%s", buffer);
+	}
+
+	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(fragmentShader, 1, &fragmentSource, NULL);
+	glCompileShader(fragmentShader);
+
+	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &status);
+	if (status == GL_FALSE) {
+		char buffer[512];
+		glGetShaderInfoLog(fragmentShader, 512, NULL, buffer);
+		printf("Failed to compile fragment shader:\n%s", buffer);
+	}
+
+	GLuint shaderProgram = glCreateProgram();
+	glAttachShader(shaderProgram, vertexShader);
+	glAttachShader(shaderProgram, fragmentShader);
+	glLinkProgram(shaderProgram);
+	glUseProgram(shaderProgram);
+
+	// Specify the layout of the vertex data
+	GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
+	glEnableVertexAttribArray(posAttrib);
+	glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 0, 0);
+
+	/*
 	while (ml.Update()) {
 		sf::Time realTime = ml.clock.getElapsedTime();
 		while (ml.simulatedTime < realTime) {
@@ -176,8 +249,43 @@ int main()
 
 		ml.window.popGLStates();
 
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+
 		ml.Display();
+		}
+		*/
+
+	while (ml.window.isOpen())
+	{
+		sf::Event windowEvent;
+		while (ml.window.pollEvent(windowEvent))
+		{
+			switch (windowEvent.type)
+			{
+				case sf::Event::Closed:
+					ml.window.close();
+					break;
+				default:
+					break;
+			}
+		}
+
+		// Clear the screen to black
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		// Draw a triangle from the 3 vertices
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+
+		// Swap buffers
+		ml.window.display();
 	}
+
+	glDeleteProgram(shaderProgram);
+	glDeleteShader(fragmentShader);
+	glDeleteShader(vertexShader);
+
+	glDeleteBuffers(1, &vbo);
 
 	return 0;
 }

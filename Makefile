@@ -4,7 +4,7 @@ BZIP_SRCS = bzip2-1.0.6/bzlib.c bzip2-1.0.6/crctable.c bzip2-1.0.6/huffman.c bzi
 BZIP_OBJS = $(patsubst bzip2-1.0.6/%.c, .objs/%.o, $(BZIP_SRCS))
 OBJS = $(patsubst $(SRCDIR)/%.cc, .objs/%.o, $(shell find $(SRCDIR) -type f -name '*.cc' ))
 CXXFLAGS = -Wall -Wextra -Werror -g -std=c++0x
-LDFLAGS = -lsfml-audio -lsfml-graphics -lsfml-window -lsfml-system -lGL
+LDFLAGS = -lsfml-audio -lsfml-graphics -lsfml-window -lsfml-system -lGLEW -lGL
 EXECNAME = sythin2
 CC = gcc
 CCFLAGS = -w -fpermissive
