@@ -281,13 +281,13 @@ int main()
 	io.IniFilename = NULL;
 
 	const GLchar *vertex_shader =
-		"#version 330\n"
+		"#version 120\n"
 		"uniform mat4 ProjMtx;\n"
-		"in vec2 Position;\n"
-		"in vec2 UV;\n"
-		"in vec4 Color;\n"
-		"out vec2 Frag_UV;\n"
-		"out vec4 Frag_Color;\n"
+		"attribute vec2 Position;\n"
+		"attribute vec2 UV;\n"
+		"attribute vec4 Color;\n"
+		"varying vec2 Frag_UV;\n"
+		"varying vec4 Frag_Color;\n"
 		"void main()\n"
 		"{\n"
 		"	Frag_UV = UV;\n"
@@ -296,14 +296,13 @@ int main()
 		"}\n";
 
 	const GLchar* fragment_shader =
-		"#version 330\n"
+		"#version 120\n"
 		"uniform sampler2D Texture;\n"
-		"in vec2 Frag_UV;\n"
-		"in vec4 Frag_Color;\n"
-		"out vec4 Out_Color;\n"
+		"varying vec2 Frag_UV;\n"
+		"varying vec4 Frag_Color;\n"
 		"void main()\n"
 		"{\n"
-		"	Out_Color = Frag_Color * texture( Texture, Frag_UV.st);\n"
+		"	gl_FragColor = Frag_Color * texture2D(Texture, Frag_UV.st);\n"
 		"}\n";
 
 	g_ShaderHandle = glCreateProgram();
@@ -317,6 +316,27 @@ int main()
 	glAttachShader(g_ShaderHandle, g_FragHandle);
 	glLinkProgram(g_ShaderHandle);
 
+	GLint status;
+	glGetShaderiv(g_VertHandle, GL_COMPILE_STATUS, &status);
+	if (status == GL_FALSE) {
+		char buffer[512];
+		glGetShaderInfoLog(g_VertHandle, 512, NULL, buffer);
+		printf("Failed to compile vertex shader:\n%s", buffer);
+		return 1;
+	}
+	glGetShaderiv(g_FragHandle, GL_COMPILE_STATUS, &status);
+	if (status == GL_FALSE) {
+		char buffer[512];
+		glGetShaderInfoLog(g_FragHandle, 512, NULL, buffer);
+		printf("Failed to compile fragment shader:\n%s", buffer);
+		return 1;
+	}
+	glGetProgramiv(g_ShaderHandle, GL_LINK_STATUS, &status);
+	if (status == GL_FALSE) {
+		printf("Failed to link shaders:\n");
+		return 1;
+	}
+
 	g_AttribLocationTex = glGetUniformLocation(g_ShaderHandle, "Texture");
 	g_AttribLocationProjMtx = glGetUniformLocation(g_ShaderHandle, "ProjMtx");
 	g_AttribLocationPosition = glGetAttribLocation(g_ShaderHandle, "Position");
@@ -326,19 +346,6 @@ int main()
 	glGenBuffers(1, &g_VboHandle);
 
 	glGenVertexArrays(1, &g_VaoHandle);
-	glBindVertexArray(g_VaoHandle);
-	glBindBuffer(GL_ARRAY_BUFFER, g_VboHandle);
-	glEnableVertexAttribArray(g_AttribLocationPosition);
-	glEnableVertexAttribArray(g_AttribLocationUV);
-	glEnableVertexAttribArray(g_AttribLocationColor);
-
-#define OFFSETOF(TYPE, ELEMENT) ((size_t)&(((TYPE *)0)->ELEMENT))
-	glVertexAttribPointer(g_AttribLocationPosition, 2, GL_FLOAT, GL_FALSE, sizeof(ImDrawVert), (GLvoid*)OFFSETOF(ImDrawVert, pos));
-	glVertexAttribPointer(g_AttribLocationUV, 2, GL_FLOAT, GL_FALSE, sizeof(ImDrawVert), (GLvoid*)OFFSETOF(ImDrawVert, uv));
-	glVertexAttribPointer(g_AttribLocationColor, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(ImDrawVert), (GLvoid*)OFFSETOF(ImDrawVert, col));
-#undef OFFSETOF
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	ImGui_CreateFontsTexture();
 
@@ -368,6 +375,19 @@ int main()
 					notes[r][i].Update();
 			ml.simulatedTime += sf::milliseconds(Constants.updateMilliseconds);
 		}
+
+		glBindVertexArray(g_VaoHandle);
+		glBindBuffer(GL_ARRAY_BUFFER, g_VboHandle);
+		glEnableVertexAttribArray(g_AttribLocationPosition);
+		glEnableVertexAttribArray(g_AttribLocationUV);
+		glEnableVertexAttribArray(g_AttribLocationColor);
+#define OFFSETOF(TYPE, ELEMENT) ((size_t)&(((TYPE *)0)->ELEMENT))
+		glVertexAttribPointer(g_AttribLocationPosition, 2, GL_FLOAT, GL_FALSE, sizeof(ImDrawVert), (GLvoid*)OFFSETOF(ImDrawVert, pos));
+		glVertexAttribPointer(g_AttribLocationUV, 2, GL_FLOAT, GL_FALSE, sizeof(ImDrawVert), (GLvoid*)OFFSETOF(ImDrawVert, uv));
+		glVertexAttribPointer(g_AttribLocationColor, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(ImDrawVert), (GLvoid*)OFFSETOF(ImDrawVert, col));
+#undef OFFSETOF
+		glBindVertexArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 		ImGui::NewFrame();
 		bool show_test_window = true;
