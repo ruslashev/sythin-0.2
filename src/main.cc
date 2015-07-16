@@ -7,7 +7,6 @@
 
 #include <GL/glew.h>
 #include <SFML/OpenGL.hpp>
-// #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include "../bzip2-1.0.6/bzlib.h"
 #include "../imgui/imgui.h"
@@ -204,10 +203,8 @@ int main()
 
 	glUseProgram(shaderProgram);
 
-	// Specify the layout of the vertex data
 	GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
 
-	/*
 	while (ml.Update()) {
 		sf::Time realTime = ml.clock.getElapsedTime();
 		while (ml.simulatedTime < realTime) {
@@ -235,48 +232,20 @@ int main()
 			ml.simulatedTime += sf::milliseconds(Constants.updateMilliseconds);
 		}
 
-		ml.window.pushGLStates();
+		glUseProgram(shaderProgram);
+		glEnableVertexAttribArray(posAttrib);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 0, 0);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glDisableVertexAttribArray(posAttrib);
+		glUseProgram(0);
 
 		for (int r = 0; r < 3; r++)
 			for (int i = 0; i < 12; i++)
 				notes[r][i].Draw(&ml.window);
 
-		ml.window.popGLStates();
-
-		glDrawArrays(GL_TRIANGLES, 0, 3);
-
 		ml.Display();
-		}
-		*/
-
-	while (ml.window.isOpen())
-	{
-		sf::Event windowEvent;
-		while (ml.window.pollEvent(windowEvent))
-		{
-			switch (windowEvent.type)
-			{
-				case sf::Event::Closed:
-					ml.window.close();
-					break;
-				default:
-					break;
-			}
-		}
-
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
-
-		glUseProgram(shaderProgram);
-		glEnableVertexAttribArray(posAttrib);
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 0, 0);
-
-		glDrawArrays(GL_TRIANGLES, 0, 3);
-
-		glDisableVertexAttribArray(posAttrib);
-
-		ml.window.display();
 	}
 
 	glDeleteProgram(shaderProgram);
