@@ -7,7 +7,7 @@
 
 #include <GL/glew.h>
 #include <SFML/OpenGL.hpp>
-#include <SFML/Graphics.hpp>
+// #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include "../bzip2-1.0.6/bzlib.h"
 #include "../imgui/imgui.h"
@@ -22,8 +22,6 @@ public:
 	sf::Clock clock;
 	MainLoop() {
 		sf::ContextSettings settings;
-		settings.depthBits = 24;
-		settings.stencilBits = 8;
 		settings.antialiasingLevel = Constants.antialiasing;
 		settings.majorVersion = 2;
 		settings.minorVersion = 1;
@@ -165,16 +163,13 @@ int main()
 		return 1;
 	}
 
-	// Create a Vertex Buffer Object and copy the vertex data to it
-	GLuint vbo;
-	glGenBuffers(1, &vbo);
-
 	GLfloat vertices[] = {
 		0.0f, 0.5f,
 		0.5f, -0.5f,
 		-0.5f, -0.5f
 	};
-
+	GLuint vbo;
+	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
@@ -206,12 +201,11 @@ int main()
 	glAttachShader(shaderProgram, vertexShader);
 	glAttachShader(shaderProgram, fragmentShader);
 	glLinkProgram(shaderProgram);
+
 	glUseProgram(shaderProgram);
 
 	// Specify the layout of the vertex data
 	GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
-	glEnableVertexAttribArray(posAttrib);
-	glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
 	/*
 	while (ml.Update()) {
@@ -270,14 +264,18 @@ int main()
 			}
 		}
 
-		// Clear the screen to black
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		// Draw a triangle from the 3 vertices
+		glUseProgram(shaderProgram);
+		glEnableVertexAttribArray(posAttrib);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 0, 0);
+
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 
-		// Swap buffers
+		glDisableVertexAttribArray(posAttrib);
+
 		ml.window.display();
 	}
 
