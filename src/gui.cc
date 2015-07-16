@@ -90,6 +90,9 @@ Gui::Gui()
 	vboSize = 0;
 	vboHandle = 0, vaoHandle = 0;
 
+	mousePressed[0] = false;
+	mousePressed[1] = false;
+
 	ImGuiIO& io = ImGui::GetIO();
 	io.RenderDrawListsFn = ImGuiRenderDrawLists;
 	io.DisplaySize = ImVec2(Globals.windowWidth, Globals.windowHeight);
@@ -197,6 +200,15 @@ void Gui::createFontsTexture()
 	// Cleanup (don't clear the input data if you want to append new fonts later)
 	io.Fonts->ClearInputData();
 	io.Fonts->ClearTexData();
+}
+
+void Gui::Update(int dt)
+{
+	ImGuiIO& io = ImGui::GetIO();
+	io.DeltaTime = (float)dt;
+	io.MousePos = ImVec2(mousePosX, mousePosY);
+	io.MouseDown[0] = mousePressed[0];
+	io.MouseDown[1] = mousePressed[1];
 }
 
 void Gui::Draw()

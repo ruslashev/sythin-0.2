@@ -152,23 +152,44 @@ int main()
 		sf::Time realTime = ml.clock.getElapsedTime();
 		while (ml.simulatedTime < realTime) {
 			while (ml.window.pollEvent(ml.event)) {
-				if (ml.event.type == sf::Event::Closed)
-					ml.window.close();
-				if (ml.event.type == sf::Event::KeyPressed)
-					for (int r = 0; r < 3; r++)
-						for (int i = 0; i < 12; i++)
-							if (ml.event.key.code == notes[r][i].key) {
-								notes[r][i].keyPressed = true;
-								notes[r][i].KeyPressed();
-							}
-				if (ml.event.type == sf::Event::KeyReleased)
-					for (int r = 0; r < 3; r++)
-						for (int i = 0; i < 12; i++)
-							if (ml.event.key.code == notes[r][i].key) {
-								notes[r][i].keyPressed = false;
-								notes[r][i].KeyReleased();
-							}
+				switch (ml.event.type) {
+					case sf::Event::Closed:
+						ml.window.close();
+						break;
+					case sf::Event::KeyPressed:
+						for (int r = 0; r < 3; r++)
+							for (int i = 0; i < 12; i++)
+								if (ml.event.key.code == notes[r][i].key) {
+									notes[r][i].keyPressed = true;
+									notes[r][i].KeyPressed();
+								}
+						break;
+					case sf::Event::KeyReleased:
+						for (int r = 0; r < 3; r++)
+							for (int i = 0; i < 12; i++)
+								if (ml.event.key.code == notes[r][i].key) {
+									notes[r][i].keyPressed = false;
+									notes[r][i].KeyReleased();
+								}
+						break;
+					case sf::Event::MouseButtonPressed:
+						gui.mousePressed[ml.event.mouseButton.button] = true;
+						break;
+					case sf::Event::MouseButtonReleased:
+						gui.mousePressed[ml.event.mouseButton.button] = false;
+						break;
+					case sf::Event::MouseWheelMoved:
+						ImGui::GetIO().MouseWheel += (float)ml.event.mouseWheel.delta;
+						break;
+					case sf::Event::MouseMoved:
+						gui.mousePosX = ml.event.mouseMove.x;
+						gui.mousePosY = ml.event.mouseMove.y;
+						break;
+					default:
+						break;
+				}
 			}
+			gui.Update(Constants.updateMilliseconds);
 			for (int r = 0; r < 3; r++)
 				for (int i = 0; i < 12; i++)
 					notes[r][i].Update();

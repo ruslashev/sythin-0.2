@@ -16,9 +16,14 @@ public:
 	int vboSize;
 	unsigned int vboHandle, vaoHandle;
 
+	int mousePosX;
+	int mousePosY;
+	bool mousePressed[2];
+
 	Gui();
 	~Gui();
 
+	void Update(int dt);
 	void Draw();
 };
 
