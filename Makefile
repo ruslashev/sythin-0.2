@@ -1,13 +1,21 @@
-CXX = g++
-SRCDIR = src
-BZIP_SRCS = bzip2-1.0.6/bzlib.c bzip2-1.0.6/crctable.c bzip2-1.0.6/huffman.c bzip2-1.0.6/randtable.c bzip2-1.0.6/compress.c bzip2-1.0.6/decompress.c bzip2-1.0.6/blocksort.c
+BZIP_SRCS = bzip2-1.0.6/bzlib.c bzip2-1.0.6/crctable.c bzip2-1.0.6/huffman.c \
+			bzip2-1.0.6/randtable.c bzip2-1.0.6/compress.c \
+			bzip2-1.0.6/decompress.c bzip2-1.0.6/blocksort.c
 BZIP_OBJS = $(patsubst bzip2-1.0.6/%.c, .objs/%.o, $(BZIP_SRCS))
-OBJS = $(patsubst $(SRCDIR)/%.cc, .objs/%.o, $(shell find $(SRCDIR) -type f -name '*.cc' ))
+
+IMGUI_OBJS = .objs/imgui.o
+
+SRCDIR = src
+OBJS = $(patsubst $(SRCDIR)/%.cc, .objs/%.o, \
+	   $(shell find $(SRCDIR) -type f -name '*.cc' ))
+
+CXX = g++
 CXXFLAGS = -Wall -Wextra -Werror -g -std=c++0x
-LDFLAGS = -lsfml-audio -lsfml-graphics -lsfml-window -lsfml-system -lGLEW -lGL
-EXECNAME = sythin2
+IMGUI_CXXFLAGS = -g -std=c++0x
 CC = gcc
 CCFLAGS = -w -fpermissive
+LDFLAGS = -lsfml-audio -lsfml-graphics -lsfml-window -lsfml-system -lGLEW -lGL
+EXECNAME = sythin2
 
 all: objdir $(EXECNAME)
 	./$(EXECNAME)
@@ -20,7 +28,11 @@ all: objdir $(EXECNAME)
 	@echo "Compiling $<"
 	@$(CC) -c -o $@ $< $(CCFLAGS)
 
-$(EXECNAME): $(OBJS) $(BZIP_OBJS)
+.objs/%.o: imgui/%.cpp
+	@echo "Compiling $<"
+	@$(CXX) -c -o $@ $< $(IMGUI_CXXFLAGS)
+
+$(EXECNAME): $(OBJS) $(BZIP_OBJS) $(IMGUI_OBJS)
 	@echo "Linking to $@"
 	@$(CXX) -o $@ $^ $(LDFLAGS)
 
@@ -36,7 +48,9 @@ objdir:
 
 clean:
 	rm -f $(EXECNAME)
-	rm -rf $(OBJS)
+	rm -f $(OBJS)
+	rm -f $(BZIP_OBJS)
+	rm -f $(IMGUI_OBJS)
 
 ftcc:
 	g++ file_to_c_source.cc $(BZIP_SRCS) -std=c++0x -o ftcc $(CCFLAGS)
