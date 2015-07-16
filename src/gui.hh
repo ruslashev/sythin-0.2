@@ -2,10 +2,13 @@
 #define GUI_HH
 
 #include <GL/glew.h>
+#include "../imgui/imgui.h"
+#include <memory>
 
 class Gui
 {
-	void createFontsTexture();
+	ImFont *font;
+
 	void checkShaderCompileSuccess(int shader);
 	void checkProgramLinkSuccess(int program);
 public:
@@ -23,6 +26,7 @@ public:
 	Gui();
 	~Gui();
 
+	void CreateFontTexture(ImFont *imFont);
 	void Update(int dt);
 	void Draw();
 };

@@ -44,14 +44,20 @@ int main()
 {
 	MainLoop ml;
 
-	sf::Font font;
+	Gui gui;
+
+	sf::Font sfFont;
+	ImFont *imFont;
 	std::unique_ptr<char> fontFileBuffer;
-	if (!loadEmbeddedFont(&font, &fontFileBuffer,
+	if (!FontLoader::loadEmbeddedFont(sfFont, imFont,
+				fontFileBuffer,
 				_CommeLight_ttf.data, _CommeLight_ttf.size))
 		return 1;
 
+	gui.CreateFontTexture(imFont);
+
 	sf::Texture noteNamesAtlas;
-	if (!note_atlas::CreateNoteTexture(font, &noteNamesAtlas))
+	if (!note_atlas::CreateNoteTexture(sfFont, &noteNamesAtlas))
 		return 1;
 
 	Note notes[3][12];
@@ -140,14 +146,6 @@ int main()
 	notes[2][10].SetNoteName(conv::As, 2);
 	notes[2][11].SetNoteName(conv::B,  2);
 
-	int err = glewInit();
-	if (err != GLEW_OK) {
-		printf("Failed to initialize GLEW: %s\n", glewGetErrorString(err));
-		throw;
-	}
-
-	Gui gui;
-
 	while (ml.Update()) {
 		sf::Time realTime = ml.clock.getElapsedTime();
 		while (ml.simulatedTime < realTime) {
@@ -189,7 +187,9 @@ int main()
 						break;
 				}
 			}
+
 			gui.Update(Constants.updateMilliseconds);
+
 			for (int r = 0; r < 3; r++)
 				for (int i = 0; i < 12; i++)
 					notes[r][i].Update();

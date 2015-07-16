@@ -1,8 +1,6 @@
 #include "gui.hh"
 #include "constants.hh"
 
-#include "../imgui/imgui.h"
-
 static void ImGuiRenderDrawLists(ImDrawData *draw_data)
 {
 	Gui *gui = (Gui*)ImGui::GetIO().UserData;
@@ -83,6 +81,12 @@ static void ImGuiRenderDrawLists(ImDrawData *draw_data)
 
 Gui::Gui()
 {
+	int err = glewInit();
+	if (err != GLEW_OK) {
+		printf("Failed to initialize GLEW: %s\n", glewGetErrorString(err));
+		throw;
+	}
+
 	fontTexture = 0;
 	shaderHandle = 0, vertHandle = 0, fragHandle = 0;
 	attribLocationTex = 0, attribLocationProjMtx = 0;
@@ -148,8 +152,6 @@ Gui::Gui()
 	glGenBuffers(1, &vboHandle);
 
 	glGenVertexArrays(1, &vaoHandle);
-
-	createFontsTexture();
 }
 
 void Gui::checkShaderCompileSuccess(int shader)
@@ -179,10 +181,11 @@ void Gui::checkProgramLinkSuccess(int program)
 	}
 }
 
-void Gui::createFontsTexture()
+void Gui::CreateFontTexture(ImFont *imFont)
 {
+	font = imFont;
+
 	ImGuiIO& io = ImGui::GetIO();
-	io.Fonts->AddFontDefault();
 
 	unsigned char *pixels;
 	int width, height;

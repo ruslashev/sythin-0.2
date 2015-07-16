@@ -46,7 +46,8 @@ const struct
 		padding +
 		12*(rectangle.size + padding);
 	struct {
-		int width = 600;
+		int width = 500;
+		int fontSize = 19;
 	} gui {};
 } Constants {};
 

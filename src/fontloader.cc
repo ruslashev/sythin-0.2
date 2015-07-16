@@ -6,22 +6,49 @@
 
 void printBzipError(int bzerror);
 
-bool loadEmbeddedFont(sf::Font *font, std::unique_ptr<char> *uncompBuffer,
-		const char *compData, unsigned int size)
+bool loadFontToLibs(sf::Font &sfFont, ImFont *&imFont,
+		std::unique_ptr<char> *uncompBuffer, unsigned int *uncompSize)
 {
-	char *compressedBuffer = new char [size];
+	if (!sfFont.loadFromMemory(uncompBuffer->get(), *uncompSize))
+		return false;
+
+	char *uncompBufferCopy = new char [*uncompSize];
+	for (unsigned int i = 0; i < *uncompSize; i++)
+		uncompBufferCopy[i] = uncompBuffer->get()[i];
+
+	imFont = ImGui::GetIO().Fonts->AddFontFromMemoryTTF(uncompBufferCopy,
+			*uncompSize,
+			Constants.gui.fontSize);
+
+	return true;
+}
+
+// Warning: while trying to understand the pointers,
+// you may pull your hair out.
+// To understand easier, note the following usage:
+//  * everything passed to the function that is going to be modified
+//    is passed as a reference, even if it is a pointer.
+//    - these are: sfFont, imFont and uncompBuffer
+//  * if it is not going to be modified, but to avoid copying, pointers
+//    are used
+//    - this is: compData
+bool FontLoader::loadEmbeddedFont(sf::Font &sfFont, ImFont *&imFont,
+		std::unique_ptr<char> &uncompBuffer,
+		const char *compData, unsigned int compSize)
+{
+	char *compressedBuffer = new char [compSize];
 	int compressedBufferCounter = 0;
-	for (size_t i = 0; i < size*2; i += 2) {
+	for (size_t i = 0; i < compSize*2; i += 2) {
 		const char byte[3] = { compData[i], compData[i+1], '\0' };
 		compressedBuffer[compressedBufferCounter++] =
 			strtol(byte, nullptr, 16);
 	}
 
 	unsigned int uncompSize = Constants.fontSizeGuess;
-	*uncompBuffer = std::unique_ptr<char>(new char [uncompSize]);
+	uncompBuffer = std::unique_ptr<char>(new char [uncompSize]);
 	int bzerror = BZ2_bzBuffToBuffDecompress(
-			uncompBuffer->get(), &uncompSize,
-			compressedBuffer, size,
+			uncompBuffer.get(), &uncompSize,
+			compressedBuffer, compSize,
 			0, 0);
 	if (bzerror != BZ_OK) {
 		printBzipError(bzerror);
@@ -30,10 +57,7 @@ bool loadEmbeddedFont(sf::Font *font, std::unique_ptr<char> *uncompBuffer,
 
 	delete [] compressedBuffer;
 
-	if (!font->loadFromMemory(uncompBuffer->get(), uncompSize))
-		return false;
-
-	return true;
+	return loadFontToLibs(sfFont, imFont, &uncompBuffer, &uncompSize);
 }
 
 void printBzipError(int bzerror)
