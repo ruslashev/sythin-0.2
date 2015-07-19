@@ -61,9 +61,10 @@ int main()
 		return 1;
 
 	Note notes[3][12];
+	int hue = 0;
 	for (int r = 0; r < 3; r++)
-		for (int i = 0; i < 12; i++) {
-			notes[r][i].SetHue((i/12.0)*360);
+		for (int i = 11; i >= 0; i--) {
+			notes[r][i].SetHue((hue++/36.0)*360);
 			int x = Constants.padding + i*(Constants.rectangle.size + Constants.padding);
 			int y = Globals.windowHeight - Constants.padding - Constants.rectangle.size -
 				(3-r-1)*(Constants.rectangle.size + Constants.padding);
@@ -200,7 +201,27 @@ int main()
 
 		gui.BeginWindow();
 
-		ImGui::Text("ImGui says hello.");
+		ImGui::Text("Sample options");
+
+		static float volumePercent = 16;
+		ImGui::SliderFloat("volume", &volumePercent, 0.0f, 100.0f, "%.1f%%");
+		Globals.volume = (32767.0*volumePercent)/100.0;
+
+		static int previewSamples = 100;
+		ImGui::SliderInt("preview samples", &previewSamples, 5, 44100, "%.0f");
+
+		const float previewFreq = 440;
+		float playSamples[44100];
+		double x = 0;
+		for (int i = 0; i < previewSamples; i++) {
+			// double freqCompensation = exp(100.0*1.0/baseFrequency);
+			playSamples[i] = Globals.volume * sin(2*M_PI*previewFreq*x);
+			x += 1.0/44100;
+		}
+		ImGui::PlotLines("##Graph", playSamples, previewSamples, 0, "", -32767, 32767, ImVec2(0,80));
+
+		if (ImGui::Button("Regenerate samples"))
+			printf("Clicked\n");
 
 		ImGui::End();
 

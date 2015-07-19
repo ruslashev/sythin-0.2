@@ -56,7 +56,7 @@ struct
 {
 	int windowWidth = Constants.notesViewWidth + Constants.padding + Constants.gui.width;
 	int windowHeight = 700;
-	int volume = 5000;
+	double volume = 5000;
 } Globals {};
 
 #endif
