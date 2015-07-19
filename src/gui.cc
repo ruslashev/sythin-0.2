@@ -183,6 +183,26 @@ void Gui::checkProgramLinkSuccess(int program)
 	}
 }
 
+void Gui::BeginWindow()
+{
+	bool opened = true;
+
+	ImGuiWindowFlags windowFlags =
+		ImGuiWindowFlags_NoResize |
+		ImGuiWindowFlags_NoMove |
+		ImGuiWindowFlags_NoCollapse;
+
+	ImVec2 windowSize(Constants.gui.width,
+			Globals.windowHeight - Constants.padding*2);
+
+	ImGui::Begin("gui", &opened, windowSize, 1.0f, windowFlags);
+
+	ImVec2 windowPos(Globals.windowWidth -
+			Constants.gui.width -
+			Constants.padding, Constants.padding);
+	ImGui::SetWindowPos("gui", windowPos, ImGuiSetCond_Always);
+}
+
 void Gui::CreateFontTexture(ImFont *imFont)
 {
 	font = imFont;
@@ -206,7 +226,7 @@ void Gui::CreateFontTexture(ImFont *imFont)
 void Gui::Update(int dt)
 {
 	ImGuiIO& io = ImGui::GetIO();
-	io.DeltaTime = (float)dt;
+	io.DeltaTime = (float)dt/1000.0f;
 	io.MousePos = ImVec2(mousePosX, mousePosY);
 	io.MouseDown[0] = mousePressed[0];
 	io.MouseDown[1] = mousePressed[1];
@@ -227,9 +247,6 @@ void Gui::Draw()
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	ImGui::NewFrame();
-	bool show_test_window = true;
-	ImGui::ShowTestWindow(&show_test_window);
 	ImGui::Render();
 }
 

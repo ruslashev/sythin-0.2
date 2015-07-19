@@ -47,13 +47,14 @@ const struct
 		12*(rectangle.size + padding);
 	struct {
 		int width = 500;
-		int fontSize = 19;
+		int fontSize = 18;
+		float alpha = 0.5f;
 	} gui {};
 } Constants {};
 
 struct
 {
-	int windowWidth = Constants.notesViewWidth + Constants.gui.width;
+	int windowWidth = Constants.notesViewWidth + Constants.padding + Constants.gui.width;
 	int windowHeight = 700;
 	int volume = 5000;
 } Globals {};

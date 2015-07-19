@@ -26,6 +26,7 @@ public:
 	Gui();
 	~Gui();
 
+	void BeginWindow();
 	void CreateFontTexture(ImFont *imFont);
 	void Update(int dt);
 	void Draw();

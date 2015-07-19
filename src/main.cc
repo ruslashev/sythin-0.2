@@ -196,6 +196,17 @@ int main()
 			ml.simulatedTime += sf::milliseconds(Constants.updateMilliseconds);
 		}
 
+		ImGui::NewFrame();
+
+		gui.BeginWindow();
+
+		ImGui::Text("ImGui says hello.");
+
+		ImGui::End();
+
+		bool opened = true;
+		ImGui::ShowTestWindow(&opened);
+
 		gui.Draw();
 
 		for (int r = 0; r < 3; r++)
