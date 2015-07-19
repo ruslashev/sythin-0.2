@@ -1,12 +1,12 @@
 BZIP_SRCS = bzip2-1.0.6/bzlib.c bzip2-1.0.6/crctable.c bzip2-1.0.6/huffman.c \
 			bzip2-1.0.6/randtable.c bzip2-1.0.6/compress.c \
 			bzip2-1.0.6/decompress.c bzip2-1.0.6/blocksort.c
-BZIP_OBJS = $(patsubst bzip2-1.0.6/%.c, .objs/%.o, $(BZIP_SRCS))
+BZIP_OBJS = $(patsubst bzip2-1.0.6/%.c,.objs/%.o, $(BZIP_SRCS))
 
 IMGUI_OBJS = .objs/imgui.o
 
 SRCDIR = src
-OBJS = $(patsubst $(SRCDIR)/%.cc, .objs/%.o, \
+OBJS = $(patsubst $(SRCDIR)/%.cc,.objs/%.o, \
 	   $(shell find $(SRCDIR) -type f -name '*.cc' ))
 
 CXX = g++
@@ -49,8 +49,6 @@ objdir:
 clean:
 	rm -f $(EXECNAME)
 	rm -f $(OBJS)
-	rm -f $(BZIP_OBJS)
-	rm -f $(IMGUI_OBJS)
 
 ftcc:
 	g++ file_to_c_source.cc $(BZIP_SRCS) -std=c++0x -o ftcc $(CCFLAGS)

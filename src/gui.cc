@@ -94,6 +94,8 @@ Gui::Gui()
 	vboSize = 0;
 	vboHandle = 0, vaoHandle = 0;
 
+	mousePosX = 0;
+	mousePosY = 0;
 	mousePressed[0] = false;
 	mousePressed[1] = false;
 
@@ -199,10 +201,6 @@ void Gui::CreateFontTexture(ImFont *imFont)
 			GL_UNSIGNED_BYTE, pixels);
 
 	io.Fonts->TexID = (void*)(intptr_t)fontTexture;
-
-	// Cleanup (don't clear the input data if you want to append new fonts later)
-	io.Fonts->ClearInputData();
-	io.Fonts->ClearTexData();
 }
 
 void Gui::Update(int dt)
@@ -252,6 +250,10 @@ Gui::~Gui()
 
 	glDeleteProgram(shaderHandle);
 	shaderHandle = 0;
+
+	ImGuiIO& io = ImGui::GetIO();
+	io.Fonts->ClearInputData();
+	io.Fonts->ClearTexData();
 
 	if (fontTexture) {
 		glDeleteTextures(1, &fontTexture);

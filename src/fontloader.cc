@@ -6,32 +6,17 @@
 
 void printBzipError(int bzerror);
 
-bool loadFontToLibs(sf::Font &sfFont, ImFont *&imFont,
-		std::unique_ptr<char> *uncompBuffer, unsigned int *uncompSize)
-{
-	if (!sfFont.loadFromMemory(uncompBuffer->get(), *uncompSize))
-		return false;
+// SFML requires pointed buffer to be kept alive as long as program is
+// running and will not deallocate it.
+// ImGui takes ownership of the buffer and will free it by itself
 
-	char *uncompBufferCopy = new char [*uncompSize];
-	for (unsigned int i = 0; i < *uncompSize; i++)
-		uncompBufferCopy[i] = uncompBuffer->get()[i];
+// * everything passed to the function that is going to be modified
+//   is passed as a reference, even if it is a pointer.
+//   - these are: sfFont, imFont* and uncompBuffer
+// * if it is not going to be modified, but to avoid copying, pointers
+//   are used
+//   - this is: compData
 
-	imFont = ImGui::GetIO().Fonts->AddFontFromMemoryTTF(uncompBufferCopy,
-			*uncompSize,
-			Constants.gui.fontSize);
-
-	return true;
-}
-
-// Warning: while trying to understand the pointers,
-// you may pull your hair out.
-// To understand easier, note the following usage:
-//  * everything passed to the function that is going to be modified
-//    is passed as a reference, even if it is a pointer.
-//    - these are: sfFont, imFont and uncompBuffer
-//  * if it is not going to be modified, but to avoid copying, pointers
-//    are used
-//    - this is: compData
 bool FontLoader::loadEmbeddedFont(sf::Font &sfFont, ImFont *&imFont,
 		std::unique_ptr<char> &uncompBuffer,
 		const char *compData, unsigned int compSize)
@@ -44,8 +29,8 @@ bool FontLoader::loadEmbeddedFont(sf::Font &sfFont, ImFont *&imFont,
 			strtol(byte, nullptr, 16);
 	}
 
+	uncompBuffer = std::unique_ptr<char>(new char [Constants.fontSizeGuess]);
 	unsigned int uncompSize = Constants.fontSizeGuess;
-	uncompBuffer = std::unique_ptr<char>(new char [uncompSize]);
 	int bzerror = BZ2_bzBuffToBuffDecompress(
 			uncompBuffer.get(), &uncompSize,
 			compressedBuffer, compSize,
@@ -57,7 +42,17 @@ bool FontLoader::loadEmbeddedFont(sf::Font &sfFont, ImFont *&imFont,
 
 	delete [] compressedBuffer;
 
-	return loadFontToLibs(sfFont, imFont, &uncompBuffer, &uncompSize);
+	if (!sfFont.loadFromMemory(uncompBuffer.get(), uncompSize))
+		return false;
+
+	ImFontConfig config;
+	config.FontDataOwnedByAtlas = false;
+	config.OversampleH = 8;
+	config.OversampleV = 8;
+	imFont = ImGui::GetIO().Fonts->AddFontFromMemoryTTF(uncompBuffer.get(),
+			uncompSize, Constants.gui.fontSize, &config);
+
+	return true;
 }
 
 void printBzipError(int bzerror)
