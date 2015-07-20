@@ -49,6 +49,10 @@ const struct
 		int width = 500;
 		int fontSize = 18;
 		float alpha = 0.5f;
+		int graphHeight = 40;
+		int previewSamplesMin = 5;
+		int previewSamplesMax = 44100;
+		float previewSamplesPower = 3.0;
 	} gui {};
 } Constants {};
 
@@ -57,6 +61,8 @@ struct
 	int windowWidth = Constants.notesViewWidth + Constants.padding + Constants.gui.width;
 	int windowHeight = 700;
 	double volume = 5000;
+
+	bool freqCompensationEnabled = false;
 } Globals {};
 
 #endif

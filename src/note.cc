@@ -25,8 +25,10 @@ void Note::generateSamples()
 	unsigned int samples = period*Constants.samplesPerSecond;
 	double x = 0;
 	for (unsigned int i = 0; i < samples; i++) {
-		// double freqCompensation = exp(100.0*1.0/baseFrequency);
-		playSamples[i] = Globals.volume * sin(omega*x);
+		double freqCompensation = 1.0;
+		if (Globals.freqCompensationEnabled)
+			freqCompensation = exp(100.0*1.0/baseFrequency);
+		playSamples[i] = Globals.volume*freqCompensation*sin(omega*x);
 		x += 1.0/Constants.samplesPerSecond;
 	}
 
@@ -79,8 +81,9 @@ void Note::SetHue(int h)
 	pressedOutlineColor = conv::HSVtoRGB(h, pressedSaturation, outlineValue);
 }
 
-void Note::SetNoteName(conv::Name noteName, int octave)
+void Note::SetNoteName(conv::Name nNoteName, int octave)
 {
+	noteName = nNoteName;
 	baseFrequency = conv::NoteNameToFreq(noteName, octave);
 	generateSamples();
 

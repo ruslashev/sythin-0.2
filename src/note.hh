@@ -27,6 +27,7 @@ public:
 	double baseFrequency;
 	bool keyPressed;
 
+	conv::Name noteName;
 	char noteLetter;
 	char noteAccidental;
 	int noteOctave;
@@ -34,7 +35,7 @@ public:
 	Note();
 	void SetPosition(int x, int y);
 	void SetHue(int h);
-	void SetNoteName(conv::Name noteName, int octave);
+	void SetNoteName(conv::Name nNoteName, int octave);
 	void SetTexture(sf::Texture *texture);
 	void Draw(sf::RenderWindow *window);
 	void Update();

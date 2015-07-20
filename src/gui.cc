@@ -234,6 +234,8 @@ void Gui::Update(int dt)
 
 void Gui::Draw()
 {
+	ImGui::End();
+
 	glBindVertexArray(vaoHandle);
 	glBindBuffer(GL_ARRAY_BUFFER, vboHandle);
 	glEnableVertexAttribArray(attribLocationPosition);
