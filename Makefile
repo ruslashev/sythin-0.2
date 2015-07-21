@@ -46,6 +46,18 @@ callgrind: objdir $(EXECNAME)
 objdir:
 	@mkdir -p .objs
 
+get-deps:
+	@mkdir -p imgui
+	touch imgui/imconfig.h
+	wget https://raw.githubusercontent.com/ocornut/imgui/master/imgui.cpp -O imgui/imgui.cpp
+	wget https://raw.githubusercontent.com/ocornut/imgui/master/imgui.h -O imgui/imgui.h
+	wget https://raw.githubusercontent.com/ocornut/imgui/master/stb_rect_pack.h -O imgui/stb_rect_pack.h
+	wget https://raw.githubusercontent.com/ocornut/imgui/master/stb_textedit.h -O imgui/stb_textedit.h
+	wget https://raw.githubusercontent.com/ocornut/imgui/master/stb_truetype.h -O imgui/stb_truetype.h
+	wget http://www.bzip.org/1.0.6/bzip2-1.0.6.tar.gz
+	tar xzf bzip2-1.0.6.tar.gz
+	rm bzip2-1.0.6.tar.gz
+
 clean:
 	rm -f $(EXECNAME)
 	rm -f $(OBJS)
