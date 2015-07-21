@@ -33,47 +33,43 @@ static void ImGuiRenderDrawLists(ImDrawData *draw_data)
 
 	for (int n = 0; n < draw_data->CmdListsCount; n++) {
 		const ImDrawList* cmd_list = draw_data->CmdLists[n];
-		const ImDrawIdx* idx_buffer = &cmd_list->IdxBuffer.front();
+		const ImDrawIdx* idx_buffer_offset = nullptr;
 
 		glBindBuffer(GL_ARRAY_BUFFER, gui->vboHandle);
-		int needed_vtx_size = cmd_list->VtxBuffer.size()*sizeof(ImDrawVert);
-		if (gui->vboSize < needed_vtx_size) {
-			// Grow our buffer if needed
-			gui->vboSize = needed_vtx_size + 2000 * sizeof(ImDrawVert);
-			glBufferData(GL_ARRAY_BUFFER, (GLsizeiptr)gui->vboSize, NULL, GL_STREAM_DRAW);
-		}
+		glBufferData(GL_ARRAY_BUFFER,
+				(GLsizeiptr)cmd_list->VtxBuffer.size()*sizeof(ImDrawVert),
+				(GLvoid*)&cmd_list->VtxBuffer.front(),
+				GL_STREAM_DRAW);
 
-		unsigned char* vtx_data = (unsigned char*)glMapBufferRange(
-				GL_ARRAY_BUFFER, 0, needed_vtx_size,
-				GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
-		if (!vtx_data)
-			continue;
-		memcpy(vtx_data, &cmd_list->VtxBuffer[0],
-				cmd_list->VtxBuffer.size()*sizeof(ImDrawVert));
-		glUnmapBuffer(GL_ARRAY_BUFFER);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gui->elementsHandle);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+				(GLsizeiptr)cmd_list->IdxBuffer.size()*sizeof(ImDrawIdx),
+				(GLvoid*)&cmd_list->IdxBuffer.front(),
+				GL_STREAM_DRAW);
 
-		for (const ImDrawCmd *pcmd = cmd_list->CmdBuffer.begin();
-				pcmd != cmd_list->CmdBuffer.end();
-				pcmd++)
-		{
-			if (pcmd->UserCallback) {
-				pcmd->UserCallback(cmd_list, pcmd);
-			} else {
-				glBindTexture(GL_TEXTURE_2D, (GLuint)(intptr_t)pcmd->TextureId);
-				glScissor((int)pcmd->ClipRect.x,
-						(int)(height - pcmd->ClipRect.w),
-						(int)(pcmd->ClipRect.z - pcmd->ClipRect.x),
-						(int)(pcmd->ClipRect.w - pcmd->ClipRect.y));
-				glDrawElements(GL_TRIANGLES, (GLsizei)pcmd->ElemCount,
-						GL_UNSIGNED_SHORT, idx_buffer);
+			for (const ImDrawCmd *pcmd = cmd_list->CmdBuffer.begin();
+					pcmd != cmd_list->CmdBuffer.end();
+					pcmd++)
+			{
+				if (pcmd->UserCallback) {
+					pcmd->UserCallback(cmd_list, pcmd);
+				} else {
+					glBindTexture(GL_TEXTURE_2D, (GLuint)(intptr_t)pcmd->TextureId);
+					glScissor((int)pcmd->ClipRect.x,
+							(int)(height - pcmd->ClipRect.w),
+							(int)(pcmd->ClipRect.z - pcmd->ClipRect.x),
+							(int)(pcmd->ClipRect.w - pcmd->ClipRect.y));
+					glDrawElements(GL_TRIANGLES, (GLsizei)pcmd->ElemCount,
+							GL_UNSIGNED_SHORT, idx_buffer_offset);
+				}
+				idx_buffer_offset += pcmd->ElemCount;
 			}
-			idx_buffer += pcmd->ElemCount;
-		}
 	}
 
 	// Restore modified state
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glUseProgram(last_program);
 	glDisable(GL_SCISSOR_TEST);
 	glBindTexture(GL_TEXTURE_2D, last_texture);
@@ -91,8 +87,7 @@ Gui::Gui()
 	shaderHandle = 0, vertHandle = 0, fragHandle = 0;
 	attribLocationTex = 0, attribLocationProjMtx = 0;
 	attribLocationPosition = 0, attribLocationUV = 0, attribLocationColor = 0;
-	vboSize = 0;
-	vboHandle = 0, vaoHandle = 0;
+	vboHandle = 0, vaoHandle = 0, elementsHandle = 0;
 
 	mousePosX = 0;
 	mousePosY = 0;
@@ -152,6 +147,7 @@ Gui::Gui()
 	attribLocationColor = glGetAttribLocation(shaderHandle, "Color");
 
 	glGenBuffers(1, &vboHandle);
+	glGenBuffers(1, &elementsHandle);
 
 	glGenVertexArrays(1, &vaoHandle);
 }
@@ -256,8 +252,8 @@ Gui::~Gui()
 {
 	if (vaoHandle) glDeleteVertexArrays(1, &vaoHandle);
 	if (vboHandle) glDeleteBuffers(1, &vboHandle);
-	vaoHandle = 0;
-	vboHandle = 0;
+	if (elementsHandle) glDeleteBuffers(1, &elementsHandle);
+	vaoHandle = vboHandle = elementsHandle = 0;
 
 	glDetachShader(shaderHandle, vertHandle);
 	glDeleteShader(vertHandle);

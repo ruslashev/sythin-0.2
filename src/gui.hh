@@ -16,8 +16,7 @@ public:
 	int shaderHandle, vertHandle, fragHandle;
 	int attribLocationTex, attribLocationProjMtx;
 	int attribLocationPosition, attribLocationUV, attribLocationColor;
-	int vboSize;
-	unsigned int vboHandle, vaoHandle;
+	unsigned int vboHandle, vaoHandle, elementsHandle;
 
 	int mousePosX;
 	int mousePosY;
