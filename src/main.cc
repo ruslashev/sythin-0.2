@@ -13,6 +13,12 @@
 #include "../imgui/imgui.h"
 #include <memory>
 
+/*
+ * LIVE
+ * PLAYBACK
+ * WRITE/SCRIPT
+ */
+
 class MainLoop
 {
 public:
@@ -201,57 +207,58 @@ int main()
 
 		gui.BeginWindow();
 
+		if (ImGui::Button("Regenerate samples"))
+			for (int r = 0; r < 3; r++)
+				for (int i = 0; i < 12; i++)
+					notes[r][i].GenerateSamples();
+
 		ImGui::Text("Preview");
-		static int previewSamples = 2000;
-		float previewSamplesFloat = previewSamples;
-		ImGui::SliderFloat("preview samples", &previewSamplesFloat,
-				Constants.gui.previewSamplesMin,
-				Constants.gui.previewSamplesMax,
-				"%.0f", Constants.gui.previewSamplesPower);
-		previewSamples = previewSamplesFloat;
+		static int samplesInPreview = 2000;
+		float samplesInPreviewFloat = samplesInPreview;
+		ImGui::SliderFloat("samples in preview", &samplesInPreviewFloat,
+				Constants.gui.samplesInPreviewMin,
+				Constants.gui.samplesInPreviewMax,
+				"%.0f", Constants.gui.samplesInPreviewPower);
+		samplesInPreview = samplesInPreviewFloat;
 
 		ImGui::Spacing();
 
 		struct {
 			Note *note;
+			const char *noteName;
 			float samples[44100];
 		} previewNotes[5] = {
-			{ &notes[2][ 0], {} }, // C2
-			{ &notes[2][10], {} }, // A#2
-			{ &notes[1][ 3], {} }, // D#3
-			{ &notes[0][ 1], {} }, // C#4
-			{ &notes[0][11], {} }  // B4
+			{ &notes[2][ 0], "C2",  {} },
+			{ &notes[2][10], "A#2", {} },
+			{ &notes[1][ 3], "D#3", {} },
+			{ &notes[0][ 1], "C#4", {} },
+			{ &notes[0][11], "B4",  {} }
 		};
 		for (int n = 0; n < 5; n++) {
 			Note *note = previewNotes[n].note;
 			double x = 0;
-			for (int i = 0; i < previewSamples; i++) {
+			for (int i = 0; i < samplesInPreview; i++) {
 				double freqCompensation = 1.0;
-				if (Globals.freqCompensationEnabled)
+				if (Globals.volumeFreqCompensationEnabled)
 					freqCompensation = exp(100.0*1.0/note->baseFrequency);
-				previewNotes[n].samples[i] =
-					Globals.volume*freqCompensation*sin(2*M_PI*note->baseFrequency*x);
+				previewNotes[n].samples[i] = Globals.volume*freqCompensation*
+					sin(2*M_PI*note->baseFrequency*x);
 				x += 1.0/Constants.samplesPerSecond;
 			}
-			std::string noteStr = "";
-			noteStr += note->noteLetter;
-			noteStr += note->noteAccidental;
-			noteStr += std::to_string(note->noteOctave);
-			ImGui::PlotLines(noteStr.c_str(), previewNotes[n].samples, previewSamples, 0, "",
-					-32767, 32767, ImVec2(0, Constants.gui.graphHeight));
+			ImGui::PlotLines(previewNotes[n].noteName, previewNotes[n].samples,
+					samplesInPreview, 0, "", -32767, 32767,
+					ImVec2(0, Constants.gui.graphHeight));
 		}
 
 		ImGui::Spacing();
 
-		if (ImGui::Button("Regenerate samples"))
-			printf("Clicked\n");
-
-		ImGui::Text("Sample settings");
-		static float volumePercent = 16;
+		ImGui::Text("Common settings");
+		static float volumePercent = Constants.gui.volumePercent;
 		ImGui::SliderFloat("volume", &volumePercent, 0.0f, 100.0f, "%.1f%%");
 		Globals.volume = (32767.0*volumePercent)/100.0;
 
-		ImGui::Checkbox("Volume compensation", &Globals.freqCompensationEnabled);
+		ImGui::Checkbox("Volume/Frequency compensation",
+				&Globals.volumeFreqCompensationEnabled);
 
 		bool opened = true;
 		ImGui::ShowTestWindow(&opened);

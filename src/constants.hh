@@ -50,20 +50,28 @@ const struct
 		int fontSize = 18;
 		float alpha = 0.5f;
 		int graphHeight = 40;
-		int previewSamplesMin = 5;
-		int previewSamplesMax = 44100;
-		float previewSamplesPower = 3.0;
+		int samplesInPreviewMin = 5;
+		int samplesInPreviewMax = 44100;
+		float samplesInPreviewPower = 3.0;
+		int volumePercent = 16;
 	} gui {};
 } Constants {};
 
-struct
+struct GlobalsHolder
 {
 	int windowWidth = Constants.notesViewWidth + Constants.padding + Constants.gui.width;
 	int windowHeight = 700;
-	double volume = 5000;
+	int volume = 5000;
 
-	bool freqCompensationEnabled = false;
-} Globals {};
+	bool volumeFreqCompensationEnabled = false;
+	// enum {
+	// 	VFC_Linear,
+	// 	VFC_Exponential,
+	// 	VFC_SquareRoot
+	// } volumeFreqCompensationMode;
+};
+
+extern GlobalsHolder Globals;
 
 #endif
 

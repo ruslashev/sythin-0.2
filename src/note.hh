@@ -20,7 +20,6 @@ class Note
 	sf::SoundBuffer playSoundBuffer;
 	sf::Sound playSound;
 
-	void generateSamples();
 	void createSprites();
 public:
 	sf::Keyboard::Key key;
@@ -33,6 +32,7 @@ public:
 	int noteOctave;
 
 	Note();
+	void GenerateSamples();
 	void SetPosition(int x, int y);
 	void SetHue(int h);
 	void SetNoteName(conv::Name nNoteName, int octave);

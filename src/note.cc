@@ -15,9 +15,11 @@ Note::Note()
 	// 			Globals.windowHeight - Constants.padding*2));
 	// lineShape.setFillColor(Constants.line.color);
 	keyPressed = false;
+
+	playSound.setBuffer(playSoundBuffer);
 }
 
-void Note::generateSamples()
+void Note::GenerateSamples()
 {
 	sf::Int16 playSamples[Constants.samplesPerSecond];
 	double omega = 2*M_PI*baseFrequency;
@@ -26,7 +28,7 @@ void Note::generateSamples()
 	double x = 0;
 	for (unsigned int i = 0; i < samples; i++) {
 		double freqCompensation = 1.0;
-		if (Globals.freqCompensationEnabled)
+		if (Globals.volumeFreqCompensationEnabled)
 			freqCompensation = exp(100.0*1.0/baseFrequency);
 		playSamples[i] = Globals.volume*freqCompensation*sin(omega*x);
 		x += 1.0/Constants.samplesPerSecond;
@@ -39,8 +41,6 @@ void Note::generateSamples()
 		puts("Failed to copy sound buffer");
 		throw;
 	}
-
-	playSound.setBuffer(playSoundBuffer);
 }
 
 void Note::createSprites()
@@ -85,7 +85,7 @@ void Note::SetNoteName(conv::Name nNoteName, int octave)
 {
 	noteName = nNoteName;
 	baseFrequency = conv::NoteNameToFreq(noteName, octave);
-	generateSamples();
+	GenerateSamples();
 
 	switch (noteName) {
 		case conv::A: case conv::As:

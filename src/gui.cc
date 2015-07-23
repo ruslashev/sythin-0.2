@@ -191,12 +191,12 @@ void Gui::BeginWindow()
 	ImVec2 windowSize(Constants.gui.width,
 			Globals.windowHeight - Constants.padding*2);
 
-	ImGui::Begin("gui", &opened, windowSize, 1.0f, windowFlags);
+	ImGui::Begin("Sampling options", &opened, windowSize, 1.0f, windowFlags);
 
 	ImVec2 windowPos(Globals.windowWidth -
 			Constants.gui.width -
 			Constants.padding, Constants.padding);
-	ImGui::SetWindowPos("gui", windowPos, ImGuiSetCond_Always);
+	ImGui::SetWindowPos("Sampling options", windowPos, ImGuiSetCond_Always);
 }
 
 void Gui::CreateFontTexture(ImFont *imFont)
