@@ -2,6 +2,7 @@
 #define CONSTANTS_HH
 
 #include <SFML/Graphics.hpp>
+#include "../imgui/imgui.h"
 
 const struct
 {
@@ -54,6 +55,25 @@ const struct
 		int samplesInPreviewMax = 44100;
 		float samplesInPreviewPower = 3.0;
 		int volumePercent = 16;
+		const char *volumeFreqCompensationModeString =
+			"Linear\0Exponential\0Square Root\0\0";
+		int volumeFreqCompensationGraphSize = 100;
+
+		struct {
+			ImColor modeLiveIdle    = ImColor::HSV(1/7.0f, 0.2f, 0.5f);
+			ImColor modeLiveHovered = ImColor::HSV(1/7.0f, 0.7f, 0.7f);
+			ImColor modeLiveActive  = ImColor::HSV(1/7.0f, 0.8f, 0.8f);
+
+			ImColor modeWriteIdle    = ImColor::HSV(2/7.0f, 0.2f, 0.5f);
+			ImColor modeWriteHovered = ImColor::HSV(2/7.0f, 0.7f, 0.7f);
+			ImColor modeWriteActive  = ImColor::HSV(2/7.0f, 0.8f, 0.8f);
+
+			ImColor modePlaybackIdle    = ImColor::HSV(3/7.0f, 0.2f, 0.5f);
+			ImColor modePlaybackHovered = ImColor::HSV(3/7.0f, 0.7f, 0.7f);
+			ImColor modePlaybackActive  = ImColor::HSV(3/7.0f, 0.8f, 0.8f);
+
+			int modeSpacing = 11;
+		} menuBar {};
 	} gui {};
 } Constants {};
 
@@ -64,11 +84,17 @@ struct GlobalsHolder
 	int volume = 5000;
 
 	bool volumeFreqCompensationEnabled = false;
-	// enum {
-	// 	VFC_Linear,
-	// 	VFC_Exponential,
-	// 	VFC_SquareRoot
-	// } volumeFreqCompensationMode;
+	enum {
+		VFC_Linear,
+		VFC_Exponential,
+		VFC_SquareRoot
+	} volumeFreqCompensationMode;
+
+	enum {
+		Mode_Live,
+		Mode_Write,
+		Mode_Playback
+	} mode = Mode_Live;
 };
 
 extern GlobalsHolder Globals;

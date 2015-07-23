@@ -26,6 +26,7 @@ public:
 	sf::Event event;
 	sf::Time simulatedTime;
 	sf::Clock clock;
+	bool quit;
 	MainLoop() {
 		sf::ContextSettings settings;
 		settings.antialiasingLevel = Constants.antialiasing;
@@ -36,10 +37,11 @@ public:
 				sf::Style::Titlebar | sf::Style::Close,
 				settings);
 		window.setKeyRepeatEnabled(false);
+		quit = false;
 	};
 	bool Update() {
 		window.clear(Constants.backgroundColor);
-		return window.isOpen();
+		return window.isOpen() && !quit;
 	}
 	void Display() {
 		window.display();
@@ -257,11 +259,92 @@ int main()
 		ImGui::SliderFloat("volume", &volumePercent, 0.0f, 100.0f, "%.1f%%");
 		Globals.volume = (32767.0*volumePercent)/100.0;
 
+		ImGui::Spacing();
+
 		ImGui::Checkbox("Volume/Frequency compensation",
 				&Globals.volumeFreqCompensationEnabled);
 
+		if (ImGui::TreeNode("VFC Options"))
+		{
+			static int item = 1;
+			ImGui::Combo("mode", &item,
+					Constants.gui.volumeFreqCompensationModeString);
+			switch (item) {
+				case 0:
+					Globals.volumeFreqCompensationMode = Globals.VFC_Linear;
+					break;
+				case 1:
+					Globals.volumeFreqCompensationMode = Globals.VFC_Exponential;
+					break;
+				case 2:
+					Globals.volumeFreqCompensationMode = Globals.VFC_SquareRoot;
+					break;
+			}
+
+			float vfcPlot[Constants.gui.volumeFreqCompensationGraphSize];
+			for (int i = 0; i < Constants.gui.volumeFreqCompensationGraphSize; i++)
+				switch (Globals.volumeFreqCompensationMode) {
+					case Globals.VFC_Linear:
+						vfcPlot[i] = i;
+						break;
+					case Globals.VFC_Exponential:
+						vfcPlot[i] = exp(i);
+						break;
+					case Globals.VFC_SquareRoot:
+						vfcPlot[i] = sqrt(i);
+						break;
+				}
+			ImGui::PlotLines("apprx plot", vfcPlot,
+					Constants.gui.volumeFreqCompensationGraphSize,
+					0, "",
+					0,
+					Constants.gui.volumeFreqCompensationGraphSize,
+					ImVec2(Constants.gui.volumeFreqCompensationGraphSize,
+						Constants.gui.volumeFreqCompensationGraphSize));
+
+			ImGui::TreePop();
+		}
+
 		bool opened = true;
+
 		ImGui::ShowTestWindow(&opened);
+
+		if (ImGui::BeginMainMenuBar()) {
+			if (ImGui::BeginMenu("Sythin2")) {
+				if (ImGui::MenuItem("Quit", ""))
+					ml.quit = true;
+				ImGui::EndMenu();
+			}
+
+			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(Constants.gui.menuBar.modeSpacing, 3));
+
+			ImGui::SameLine();
+			ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.menuBar.modeLiveIdle);
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, Constants.gui.menuBar.modeLiveHovered);
+			ImGui::PushStyleColor(ImGuiCol_ButtonActive, Constants.gui.menuBar.modeLiveActive);
+			ImGui::Button("LIVE");
+			ImGui::PopStyleColor(3);
+
+			ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
+
+			ImGui::SameLine();
+			ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.menuBar.modeWriteIdle);
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, Constants.gui.menuBar.modeWriteHovered);
+			ImGui::PushStyleColor(ImGuiCol_ButtonActive, Constants.gui.menuBar.modeWriteActive);
+			ImGui::Button("WRITE");
+			ImGui::PopStyleColor(3);
+
+			ImGui::SameLine();
+			ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.menuBar.modePlaybackIdle);
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, Constants.gui.menuBar.modePlaybackHovered);
+			ImGui::PushStyleColor(ImGuiCol_ButtonActive, Constants.gui.menuBar.modePlaybackActive);
+			ImGui::Button("PLAYBACK");
+			ImGui::PopStyleColor(3);
+
+			ImGui::PopStyleVar(2);
+
+			ImGui::EndMainMenuBar();
+		}
 
 		gui.Draw();
 
