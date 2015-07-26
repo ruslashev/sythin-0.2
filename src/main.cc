@@ -241,7 +241,7 @@ int main()
 			double x = 0;
 			for (int i = 0; i < samplesInPreview; i++) {
 				double freqCompensation = 1.0;
-				if (Globals.volumeFreqCompensationEnabled)
+				if (Globals.VFC.enabled)
 					freqCompensation = exp(100.0*1.0/note->baseFrequency);
 				previewNotes[n].samples[i] = Globals.volume*freqCompensation*
 					sin(2*M_PI*note->baseFrequency*x);
@@ -261,46 +261,27 @@ int main()
 
 		ImGui::Spacing();
 
-		ImGui::Checkbox("Volume/Frequency compensation",
-				&Globals.volumeFreqCompensationEnabled);
-
-		if (ImGui::TreeNode("VFC Options"))
+		if (ImGui::TreeNode("Volume/Frequency compensation"))
 		{
+			ImGui::Checkbox("enable",
+					&Globals.VFC.enabled);
+
 			static int item = 1;
 			ImGui::Combo("mode", &item,
-					Constants.gui.volumeFreqCompensationModeString);
-			switch (item) {
-				case 0:
-					Globals.volumeFreqCompensationMode = Globals.VFC_Linear;
-					break;
-				case 1:
-					Globals.volumeFreqCompensationMode = Globals.VFC_Exponential;
-					break;
-				case 2:
-					Globals.volumeFreqCompensationMode = Globals.VFC_SquareRoot;
-					break;
+					Constants.gui.VFCModeString);
+			if (item == 0) {
+				Globals.VFC.mode = Globals.VFC.Linear;
+			} else if (item == 1) {
+				Globals.VFC.mode = Globals.VFC.Exponential;
+				static float exponentialStrength = Globals.VFC.exponentialStrength;
+				ImGui::SliderFloat("strength",
+						&exponentialStrength,
+						Constants.gui.exponentialStrengthMin,
+						Constants.gui.exponentialStrengthMax, "%.1f");
+				Globals.VFC.exponentialStrength = exponentialStrength;
+			} else if (item == 2) {
+				Globals.VFC.mode = Globals.VFC.SquareRoot;
 			}
-
-			float vfcPlot[Constants.gui.volumeFreqCompensationGraphSize];
-			for (int i = 0; i < Constants.gui.volumeFreqCompensationGraphSize; i++)
-				switch (Globals.volumeFreqCompensationMode) {
-					case Globals.VFC_Linear:
-						vfcPlot[i] = i;
-						break;
-					case Globals.VFC_Exponential:
-						vfcPlot[i] = exp(i);
-						break;
-					case Globals.VFC_SquareRoot:
-						vfcPlot[i] = sqrt(i);
-						break;
-				}
-			ImGui::PlotLines("apprx plot", vfcPlot,
-					Constants.gui.volumeFreqCompensationGraphSize,
-					0, "",
-					0,
-					Constants.gui.volumeFreqCompensationGraphSize,
-					ImVec2(Constants.gui.volumeFreqCompensationGraphSize,
-						Constants.gui.volumeFreqCompensationGraphSize));
 
 			ImGui::TreePop();
 		}

@@ -52,13 +52,12 @@ const struct
 		float alpha = 0.5f;
 		int graphHeight = 40;
 		int samplesInPreviewMin = 5;
-		int samplesInPreviewMax = 44100;
+		int samplesInPreviewMax = 22050;
 		float samplesInPreviewPower = 3.0;
 		int volumePercent = 16;
-		const char *volumeFreqCompensationModeString =
+		const char *VFCModeString =
 			"Linear\0Exponential\0Square Root\0\0";
-		int volumeFreqCompensationGraphSize = 100;
-
+		int menuBarGuiOffset = 25;
 		struct {
 			ImColor modeLiveIdle    = ImColor::HSV(1/7.0f, 0.2f, 0.5f);
 			ImColor modeLiveHovered = ImColor::HSV(1/7.0f, 0.7f, 0.7f);
@@ -74,6 +73,8 @@ const struct
 
 			int modeSpacing = 11;
 		} menuBar {};
+		float exponentialStrengthMin = 1.0;
+		float exponentialStrengthMax = 1000.0;
 	} gui {};
 } Constants {};
 
@@ -83,12 +84,15 @@ struct GlobalsHolder
 	int windowHeight = 700;
 	int volume = 5000;
 
-	bool volumeFreqCompensationEnabled = false;
-	enum {
-		VFC_Linear,
-		VFC_Exponential,
-		VFC_SquareRoot
-	} volumeFreqCompensationMode;
+	struct {
+		bool enabled = true;
+		enum {
+			Linear,
+			Exponential,
+			SquareRoot
+		} mode;
+		double exponentialStrength = 100.0;
+	} VFC;
 
 	enum {
 		Mode_Live,

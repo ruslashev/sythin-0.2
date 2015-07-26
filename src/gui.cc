@@ -183,19 +183,22 @@ void Gui::BeginWindow()
 {
 	bool opened = true;
 
+	ImVec2 windowSize(Constants.gui.width,
+			Globals.windowHeight - Constants.padding*2 -
+			Constants.gui.menuBarGuiOffset
+			);
+
 	ImGuiWindowFlags windowFlags =
 		ImGuiWindowFlags_NoResize |
 		ImGuiWindowFlags_NoMove |
 		ImGuiWindowFlags_NoCollapse;
 
-	ImVec2 windowSize(Constants.gui.width,
-			Globals.windowHeight - Constants.padding*2);
+	ImGui::Begin("Sampling options", &opened, windowSize, Constants.gui.alpha,
+			windowFlags);
 
-	ImGui::Begin("Sampling options", &opened, windowSize, 1.0f, windowFlags);
-
-	ImVec2 windowPos(Globals.windowWidth -
-			Constants.gui.width -
-			Constants.padding, Constants.padding);
+	ImVec2 windowPos(
+			Globals.windowWidth - Constants.gui.width - Constants.padding,
+			Constants.padding + Constants.gui.menuBarGuiOffset);
 	ImGui::SetWindowPos("Sampling options", windowPos, ImGuiSetCond_Always);
 }
 
