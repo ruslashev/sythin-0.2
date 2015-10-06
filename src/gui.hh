@@ -29,6 +29,7 @@ public:
 
 	void BeginTabWindow();
 	void BeginWindow();
+	void MainMenuBar();
 	void CreateFontTexture(ImFont *imFont);
 	void Update(int dt);
 	void Draw();

@@ -26,7 +26,6 @@ public:
 	sf::Event event;
 	sf::Time simulatedTime;
 	sf::Clock clock;
-	bool quit;
 	MainLoop() {
 		sf::ContextSettings settings;
 		settings.antialiasingLevel = Constants.antialiasing;
@@ -37,11 +36,10 @@ public:
 				sf::Style::Titlebar | sf::Style::Close,
 				settings);
 		window.setKeyRepeatEnabled(false);
-		quit = false;
 	};
 	bool Update() {
 		window.clear(Constants.backgroundColor);
-		return window.isOpen() && !quit;
+		return window.isOpen() && !Globals.quit;
 	}
 	void Display() {
 		window.display();
@@ -216,13 +214,15 @@ int main()
 		// ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
 
 		ImGui::SameLine();
-		ImGui::Button("General Options");
+		ImGui::Button("General Settings");
 
 		// ImGui::PopStyleVar(1);
 
 		ImGui::End();
 
 		gui.BeginWindow();
+
+		ImGui::Text("Sampling options");
 
 		if (ImGui::Button("Regenerate samples"))
 			for (int r = 0; r < 3; r++)
@@ -301,42 +301,7 @@ int main()
 			ImGui::TreePop();
 		}
 
-		if (ImGui::BeginMainMenuBar()) {
-			if (ImGui::BeginMenu("Sythin2")) {
-				if (ImGui::MenuItem("Quit", ""))
-					ml.quit = true;
-				ImGui::EndMenu();
-			}
-
-			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(Constants.gui.menuBar.modeSpacing, 3));
-
-			ImGui::SameLine();
-			ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.menuBar.modeLiveIdle);
-			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, Constants.gui.menuBar.modeLiveHovered);
-			ImGui::PushStyleColor(ImGuiCol_ButtonActive, Constants.gui.menuBar.modeLiveActive);
-			ImGui::Button("LIVE");
-			ImGui::PopStyleColor(3);
-
-			ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
-
-			ImGui::SameLine();
-			ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.menuBar.modeWriteIdle);
-			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, Constants.gui.menuBar.modeWriteHovered);
-			ImGui::PushStyleColor(ImGuiCol_ButtonActive, Constants.gui.menuBar.modeWriteActive);
-			ImGui::Button("WRITE");
-			ImGui::PopStyleColor(3);
-
-			ImGui::SameLine();
-			ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.menuBar.modePlaybackIdle);
-			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, Constants.gui.menuBar.modePlaybackHovered);
-			ImGui::PushStyleColor(ImGuiCol_ButtonActive, Constants.gui.menuBar.modePlaybackActive);
-			ImGui::Button("PLAYBACK");
-			ImGui::PopStyleColor(3);
-
-			ImGui::PopStyleVar(2);
-
-			ImGui::EndMainMenuBar();
-		}
+		gui.MainMenuBar();
 
 		bool opened = true;
 		ImGui::ShowTestWindow(&opened);

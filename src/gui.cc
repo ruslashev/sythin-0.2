@@ -213,14 +213,54 @@ void Gui::BeginWindow()
 		ImGuiWindowFlags_NoMove |
 		ImGuiWindowFlags_NoCollapse;
 
-	ImGui::Begin("Sampling options", &opened, windowSize, Constants.gui.alpha,
+	ImGui::Begin("General Settings", &opened, windowSize, Constants.gui.alpha,
 			windowFlags);
 
 	ImVec2 windowPos(
 			Globals.windowWidth - Constants.gui.width - Constants.padding,
 			Constants.padding + Constants.gui.menuBarGuiOffset +
 			40 + Constants.padding);
-	ImGui::SetWindowPos("Sampling options", windowPos, ImGuiSetCond_Always);
+	ImGui::SetWindowPos("General Settings", windowPos, ImGuiSetCond_Always);
+}
+
+void Gui::MainMenuBar()
+{
+	if (ImGui::BeginMainMenuBar()) {
+		if (ImGui::BeginMenu("Sythin2")) {
+			if (ImGui::MenuItem("Quit", ""))
+				Globals.quit = true;
+			ImGui::EndMenu();
+		}
+
+		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(Constants.gui.menuBar.modeSpacing, 3));
+
+		ImGui::SameLine();
+		ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.menuBar.modeLiveIdle);
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, Constants.gui.menuBar.modeLiveHovered);
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, Constants.gui.menuBar.modeLiveActive);
+		ImGui::Button("LIVE");
+		ImGui::PopStyleColor(3);
+
+		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
+
+		ImGui::SameLine();
+		ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.menuBar.modeWriteIdle);
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, Constants.gui.menuBar.modeWriteHovered);
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, Constants.gui.menuBar.modeWriteActive);
+		ImGui::Button("WRITE");
+		ImGui::PopStyleColor(3);
+
+		ImGui::SameLine();
+		ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.menuBar.modePlaybackIdle);
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, Constants.gui.menuBar.modePlaybackHovered);
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, Constants.gui.menuBar.modePlaybackActive);
+		ImGui::Button("PLAYBACK");
+		ImGui::PopStyleColor(3);
+
+		ImGui::PopStyleVar(2);
+
+		ImGui::EndMainMenuBar();
+	}
 }
 
 void Gui::CreateFontTexture(ImFont *imFont)

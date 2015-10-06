@@ -80,6 +80,8 @@ const struct
 
 struct GlobalsHolder
 {
+	bool quit = false;
+
 	int windowWidth = Constants.notesViewWidth + Constants.padding + Constants.gui.width;
 	int windowHeight = 700;
 	int volume = 5000;
@@ -99,6 +101,11 @@ struct GlobalsHolder
 		Mode_Write,
 		Mode_Playback
 	} mode = Mode_Live;
+
+	enum {
+		Tab_GeneralOptions,
+		Tab_Playback
+	} tab = Tab_GeneralOptions;
 };
 
 extern GlobalsHolder Globals;
