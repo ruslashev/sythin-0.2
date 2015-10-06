@@ -207,6 +207,21 @@ int main()
 
 		ImGui::NewFrame();
 
+		gui.BeginTabWindow();
+
+		// ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(Constants.gui.menuBar.modeSpacing, 3));
+
+		ImGui::Button("Wave");
+
+		// ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
+
+		ImGui::SameLine();
+		ImGui::Button("General Options");
+
+		// ImGui::PopStyleVar(1);
+
+		ImGui::End();
+
 		gui.BeginWindow();
 
 		if (ImGui::Button("Regenerate samples"))
@@ -286,10 +301,6 @@ int main()
 			ImGui::TreePop();
 		}
 
-		bool opened = true;
-
-		ImGui::ShowTestWindow(&opened);
-
 		if (ImGui::BeginMainMenuBar()) {
 			if (ImGui::BeginMenu("Sythin2")) {
 				if (ImGui::MenuItem("Quit", ""))
@@ -326,6 +337,9 @@ int main()
 
 			ImGui::EndMainMenuBar();
 		}
+
+		bool opened = true;
+		ImGui::ShowTestWindow(&opened);
 
 		gui.Draw();
 

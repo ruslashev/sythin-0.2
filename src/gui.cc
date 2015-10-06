@@ -179,15 +179,35 @@ void Gui::checkProgramLinkSuccess(int program)
 	}
 }
 
+void Gui::BeginTabWindow()
+{
+	bool opened = true;
+
+	ImVec2 windowSize(Constants.gui.width,
+			40); // hardcode for now
+	ImGuiWindowFlags windowFlags =
+		ImGuiWindowFlags_NoTitleBar |
+		ImGuiWindowFlags_NoResize |
+		ImGuiWindowFlags_NoMove |
+		// ImGuiWindowFlags_AlwaysAutoResize |
+		ImGuiWindowFlags_NoCollapse;
+
+	ImGui::Begin("Tabs", &opened, windowSize, Constants.gui.alpha,
+			windowFlags);
+
+	ImVec2 windowPos(
+			Globals.windowWidth - Constants.gui.width - Constants.padding,
+			Constants.padding + Constants.gui.menuBarGuiOffset);
+	ImGui::SetWindowPos("Tabs", windowPos, ImGuiSetCond_Always);
+}
+
 void Gui::BeginWindow()
 {
 	bool opened = true;
 
 	ImVec2 windowSize(Constants.gui.width,
 			Globals.windowHeight - Constants.padding*2 -
-			Constants.gui.menuBarGuiOffset
-			);
-
+			Constants.gui.menuBarGuiOffset - 40 - Constants.padding);
 	ImGuiWindowFlags windowFlags =
 		ImGuiWindowFlags_NoResize |
 		ImGuiWindowFlags_NoMove |
@@ -198,7 +218,8 @@ void Gui::BeginWindow()
 
 	ImVec2 windowPos(
 			Globals.windowWidth - Constants.gui.width - Constants.padding,
-			Constants.padding + Constants.gui.menuBarGuiOffset);
+			Constants.padding + Constants.gui.menuBarGuiOffset +
+			40 + Constants.padding);
 	ImGui::SetWindowPos("Sampling options", windowPos, ImGuiSetCond_Always);
 }
 

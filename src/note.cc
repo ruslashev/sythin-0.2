@@ -28,8 +28,8 @@ void Note::GenerateSamples()
 	double x = 0;
 	for (unsigned int i = 0; i < samples; i++) {
 		double freqCompensation = 1.0;
-		if (Globals.volumeFreqCompensationEnabled)
-			freqCompensation = exp(100.0*1.0/baseFrequency);
+		// if (Globals.volumeFreqCompensationEnabled)
+		// 	freqCompensation = exp(100.0*1.0/baseFrequency);
 		playSamples[i] = Globals.volume*freqCompensation*sin(omega*x);
 		x += 1.0/Constants.samplesPerSecond;
 	}

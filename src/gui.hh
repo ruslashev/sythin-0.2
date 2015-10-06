@@ -18,6 +18,8 @@ public:
 	int attribLocationPosition, attribLocationUV, attribLocationColor;
 	unsigned int vboHandle, vaoHandle, elementsHandle;
 
+	// bool generalOptionsOpen, wave
+
 	int mousePosX;
 	int mousePosY;
 	bool mousePressed[2];
@@ -25,6 +27,7 @@ public:
 	Gui();
 	~Gui();
 
+	void BeginTabWindow();
 	void BeginWindow();
 	void CreateFontTexture(ImFont *imFont);
 	void Update(int dt);
