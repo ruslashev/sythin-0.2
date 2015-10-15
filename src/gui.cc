@@ -235,26 +235,38 @@ void Gui::MainMenuBar()
 		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(Constants.gui.menuBar.modeSpacing, 3));
 
 		ImGui::SameLine();
-		ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.menuBar.modeLiveIdle);
+		if (Globals.mode == GlobalsHolder::Mode_Live)
+			ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.menuBar.modeLiveActive);
+		else
+			ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.menuBar.modeLiveIdle);
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, Constants.gui.menuBar.modeLiveHovered);
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, Constants.gui.menuBar.modeLiveActive);
-		ImGui::Button("LIVE");
+		if (ImGui::Button("LIVE"))
+			Globals.mode = GlobalsHolder::Mode_Live;
 		ImGui::PopStyleColor(3);
 
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
 
 		ImGui::SameLine();
-		ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.menuBar.modeWriteIdle);
+		if (Globals.mode == GlobalsHolder::Mode_Write)
+			ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.menuBar.modeWriteActive);
+		else
+			ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.menuBar.modeWriteIdle);
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, Constants.gui.menuBar.modeWriteHovered);
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, Constants.gui.menuBar.modeWriteActive);
-		ImGui::Button("WRITE");
+		if (ImGui::Button("WRITE"))
+			Globals.mode = GlobalsHolder::Mode_Write;
 		ImGui::PopStyleColor(3);
 
 		ImGui::SameLine();
-		ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.menuBar.modePlaybackIdle);
+		if (Globals.mode == GlobalsHolder::Mode_Playback)
+			ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.menuBar.modePlaybackActive);
+		else
+			ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.menuBar.modePlaybackIdle);
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, Constants.gui.menuBar.modePlaybackHovered);
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, Constants.gui.menuBar.modePlaybackActive);
-		ImGui::Button("PLAYBACK");
+		if (ImGui::Button("PLAYBACK"))
+			Globals.mode = GlobalsHolder::Mode_Playback;
 		ImGui::PopStyleColor(3);
 
 		ImGui::PopStyleVar(2);

@@ -13,12 +13,6 @@
 #include "../imgui/imgui.h"
 #include <memory>
 
-/*
- * LIVE
- * PLAYBACK
- * WRITE/SCRIPT
- */
-
 class MainLoop
 {
 public:
@@ -207,16 +201,20 @@ int main()
 
 		gui.BeginTabWindow();
 
-		// ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(Constants.gui.menuBar.modeSpacing, 3));
-
-		ImGui::Button("Wave");
-
-		// ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
-
+		if (Globals.tab == GlobalsHolder::Tab_Wave)
+			ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.menuBar.modeLiveActive);
+		else
+			ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.menuBar.modeLiveIdle);
+		if (ImGui::Button("Wave"))
+			Globals.tab = GlobalsHolder::Tab_Wave;
 		ImGui::SameLine();
-		ImGui::Button("General Settings");
-
-		// ImGui::PopStyleVar(1);
+		if (Globals.tab == GlobalsHolder::Tab_GeneralSettings)
+			ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.menuBar.modeLiveActive);
+		else
+			ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.menuBar.modeLiveIdle);
+		if (ImGui::Button("General Settings"))
+			Globals.tab = GlobalsHolder::Tab_GeneralSettings;
+		ImGui::PopStyleColor(2);
 
 		ImGui::End();
 

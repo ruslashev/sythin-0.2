@@ -103,9 +103,9 @@ struct GlobalsHolder
 	} mode = Mode_Live;
 
 	enum {
-		Tab_GeneralOptions,
-		Tab_Playback
-	} tab = Tab_GeneralOptions;
+		Tab_GeneralSettings,
+		Tab_Wave
+	} tab = Tab_Wave;
 };
 
 extern GlobalsHolder Globals;
