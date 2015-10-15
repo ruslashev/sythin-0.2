@@ -179,28 +179,6 @@ void Gui::checkProgramLinkSuccess(int program)
 	}
 }
 
-void Gui::BeginTabWindow()
-{
-	bool opened = true;
-
-	ImVec2 windowSize(Constants.gui.width,
-			40); // hardcode for now
-	ImGuiWindowFlags windowFlags =
-		ImGuiWindowFlags_NoTitleBar |
-		ImGuiWindowFlags_NoResize |
-		ImGuiWindowFlags_NoMove |
-		// ImGuiWindowFlags_AlwaysAutoResize |
-		ImGuiWindowFlags_NoCollapse;
-
-	ImGui::Begin("Tabs", &opened, windowSize, Constants.gui.alpha,
-			windowFlags);
-
-	ImVec2 windowPos(
-			Globals.windowWidth - Constants.gui.width - Constants.padding,
-			Constants.padding + Constants.gui.menuBarGuiOffset);
-	ImGui::SetWindowPos("Tabs", windowPos, ImGuiSetCond_Always);
-}
-
 void Gui::BeginWindow()
 {
 	bool opened = true;
@@ -235,44 +213,95 @@ void Gui::MainMenuBar()
 		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(Constants.gui.menuBar.modeSpacing, 3));
 
 		ImGui::SameLine();
-		if (Globals.mode == GlobalsHolder::Mode_Live)
-			ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.menuBar.modeLiveActive);
-		else
-			ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.menuBar.modeLiveIdle);
-		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, Constants.gui.menuBar.modeLiveHovered);
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, Constants.gui.menuBar.modeLiveActive);
+		if (Globals.mode == GlobalsHolder::Mode_Live) {
+			ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.menuBar.modeLiveActive);
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, Constants.gui.menuBar.modeLiveActive);
+		} else {
+			ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.menuBar.modeLiveIdle);
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, Constants.gui.menuBar.modeLiveHovered);
+		}
 		if (ImGui::Button("LIVE"))
 			Globals.mode = GlobalsHolder::Mode_Live;
-		ImGui::PopStyleColor(3);
 
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
 
 		ImGui::SameLine();
-		if (Globals.mode == GlobalsHolder::Mode_Write)
-			ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.menuBar.modeWriteActive);
-		else
-			ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.menuBar.modeWriteIdle);
-		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, Constants.gui.menuBar.modeWriteHovered);
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, Constants.gui.menuBar.modeWriteActive);
+		if (Globals.mode == GlobalsHolder::Mode_Write) {
+			ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.menuBar.modeWriteActive);
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, Constants.gui.menuBar.modeWriteActive);
+		} else {
+			ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.menuBar.modeWriteIdle);
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, Constants.gui.menuBar.modeWriteHovered);
+		}
 		if (ImGui::Button("WRITE"))
 			Globals.mode = GlobalsHolder::Mode_Write;
-		ImGui::PopStyleColor(3);
 
 		ImGui::SameLine();
-		if (Globals.mode == GlobalsHolder::Mode_Playback)
-			ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.menuBar.modePlaybackActive);
-		else
-			ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.menuBar.modePlaybackIdle);
-		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, Constants.gui.menuBar.modePlaybackHovered);
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, Constants.gui.menuBar.modePlaybackActive);
+		if (Globals.mode == GlobalsHolder::Mode_Playback) {
+			ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.menuBar.modePlaybackActive);
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, Constants.gui.menuBar.modePlaybackActive);
+		} else {
+			ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.menuBar.modePlaybackIdle);
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, Constants.gui.menuBar.modePlaybackHovered);
+		}
 		if (ImGui::Button("PLAYBACK"))
 			Globals.mode = GlobalsHolder::Mode_Playback;
-		ImGui::PopStyleColor(3);
+
+		ImGui::PopStyleColor(3*3);
 
 		ImGui::PopStyleVar(2);
 
 		ImGui::EndMainMenuBar();
 	}
+}
+
+void Gui::Tabs()
+{
+	bool opened = true;
+
+	ImVec2 windowSize(Constants.gui.width,
+			40); // hardcode for now
+	ImGuiWindowFlags windowFlags =
+		ImGuiWindowFlags_NoTitleBar |
+		ImGuiWindowFlags_NoResize |
+		ImGuiWindowFlags_NoMove |
+		// ImGuiWindowFlags_AlwaysAutoResize |
+		ImGuiWindowFlags_NoCollapse;
+
+	ImGui::Begin("Tabs", &opened, windowSize, Constants.gui.alpha,
+			windowFlags);
+
+	ImVec2 windowPos(
+			Globals.windowWidth - Constants.gui.width - Constants.padding,
+			Constants.padding + Constants.gui.menuBarGuiOffset);
+	ImGui::SetWindowPos("Tabs", windowPos, ImGuiSetCond_Always);
+
+	ImGui::PushStyleColor(ImGuiCol_ButtonActive, Constants.gui.tabs.active);
+	if (Globals.tab == GlobalsHolder::Tab_Wave) {
+		ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.tabs.active);
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, Constants.gui.tabs.active);
+	} else {
+		ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.tabs.idle);
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, Constants.gui.tabs.hovered);
+	}
+	if (ImGui::Button("Wave"))
+		Globals.tab = GlobalsHolder::Tab_Wave;
+	ImGui::SameLine();
+	if (Globals.tab == GlobalsHolder::Tab_GeneralSettings) {
+		ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.tabs.active);
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, Constants.gui.tabs.active);
+	} else {
+		ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.tabs.idle);
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, Constants.gui.tabs.hovered);
+	}
+	if (ImGui::Button("General Settings"))
+		Globals.tab = GlobalsHolder::Tab_GeneralSettings;
+	ImGui::PopStyleColor(2*2+1);
+
+	ImGui::End();
 }
 
 void Gui::CreateFontTexture(ImFont *imFont)

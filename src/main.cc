@@ -199,24 +199,7 @@ int main()
 
 		ImGui::NewFrame();
 
-		gui.BeginTabWindow();
-
-		if (Globals.tab == GlobalsHolder::Tab_Wave)
-			ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.menuBar.modeLiveActive);
-		else
-			ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.menuBar.modeLiveIdle);
-		if (ImGui::Button("Wave"))
-			Globals.tab = GlobalsHolder::Tab_Wave;
-		ImGui::SameLine();
-		if (Globals.tab == GlobalsHolder::Tab_GeneralSettings)
-			ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.menuBar.modeLiveActive);
-		else
-			ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.menuBar.modeLiveIdle);
-		if (ImGui::Button("General Settings"))
-			Globals.tab = GlobalsHolder::Tab_GeneralSettings;
-		ImGui::PopStyleColor(2);
-
-		ImGui::End();
+		gui.Tabs();
 
 		gui.BeginWindow();
 

@@ -27,9 +27,9 @@ public:
 	Gui();
 	~Gui();
 
-	void BeginTabWindow();
 	void BeginWindow();
 	void MainMenuBar();
+	void Tabs();
 	void CreateFontTexture(ImFont *imFont);
 	void Update(int dt);
 	void Draw();

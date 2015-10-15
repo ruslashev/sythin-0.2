@@ -59,22 +59,27 @@ const struct
 			"Linear\0Exponential\0Square Root\0\0";
 		int menuBarGuiOffset = 25;
 		struct {
-			ImColor modeLiveIdle    = ImColor::HSV(1/7.0f, 0.2f, 0.5f);
-			ImColor modeLiveHovered = ImColor::HSV(1/7.0f, 0.7f, 0.7f);
-			ImColor modeLiveActive  = ImColor::HSV(1/7.0f, 0.8f, 0.8f);
+			ImColor modeLiveIdle        = ImColor::HSV( 60/360.,  37/100.,  40/100., 1.00);
+			ImColor modeLiveHovered     = ImColor::HSV( 60/360.,  40/100.,  67/100., 1.00);
+			ImColor modeLiveActive      = ImColor::HSV( 60/360.,  37/100.,  80/100., 1.00);
 
-			ImColor modeWriteIdle    = ImColor::HSV(2/7.0f, 0.2f, 0.5f);
-			ImColor modeWriteHovered = ImColor::HSV(2/7.0f, 0.7f, 0.7f);
-			ImColor modeWriteActive  = ImColor::HSV(2/7.0f, 0.8f, 0.8f);
+			ImColor modeWriteIdle       = ImColor::HSV(345/360.,  37/100.,  40/100., 1.00);
+			ImColor modeWriteHovered    = ImColor::HSV(345/360.,  40/100.,  67/100., 1.00);
+			ImColor modeWriteActive     = ImColor::HSV(345/360.,  37/100.,  80/100., 1.00);
 
-			ImColor modePlaybackIdle    = ImColor::HSV(3/7.0f, 0.2f, 0.5f);
-			ImColor modePlaybackHovered = ImColor::HSV(3/7.0f, 0.7f, 0.7f);
-			ImColor modePlaybackActive  = ImColor::HSV(3/7.0f, 0.8f, 0.8f);
+			ImColor modePlaybackIdle    = ImColor::HSV(150/360.,  37/100.,  40/100., 1.00);
+			ImColor modePlaybackHovered = ImColor::HSV(150/360.,  40/100.,  67/100., 1.00);
+			ImColor modePlaybackActive  = ImColor::HSV(150/360.,  37/100.,  80/100., 1.00);
 
 			int modeSpacing = 11;
 		} menuBar {};
 		float exponentialStrengthMin = 1.0;
 		float exponentialStrengthMax = 1000.0;
+		struct {
+			ImColor idle    = ImColor::HSV(0/360.,  37/100.,  40/100., 1.00);
+			ImColor hovered = ImColor::HSV(0/360.,  40/100.,  67/100., 1.00);
+			ImColor active  = ImColor::HSV(0/360.,  37/100.,  80/100., 1.00);
+		} tabs {};
 	} gui {};
 } Constants {};
 
