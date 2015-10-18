@@ -90,6 +90,9 @@ Gui::Gui()
 	attribLocationPosition = 0, attribLocationUV = 0, attribLocationColor = 0;
 	vboHandle = 0, vaoHandle = 0, elementsHandle = 0;
 
+	settingsOpen = true;
+	waveOpen = false;
+
 	mousePosX = 0;
 	mousePosY = 0;
 	mousePressed[0] = false;
@@ -180,28 +183,6 @@ void Gui::checkProgramLinkSuccess(int program)
 	}
 }
 
-void Gui::BeginWindow()
-{
-	bool opened = true;
-
-	ImVec2 windowSize(Constants.gui.width,
-			Globals.windowHeight - Constants.padding*2 -
-			Constants.gui.menuBarGuiOffset - 40 - Constants.padding);
-	ImGuiWindowFlags windowFlags =
-		ImGuiWindowFlags_NoResize |
-		ImGuiWindowFlags_NoMove |
-		ImGuiWindowFlags_NoCollapse;
-
-	ImGui::Begin("General Settings", &opened, windowSize, Constants.gui.alpha,
-			windowFlags);
-
-	ImVec2 windowPos(
-			Globals.windowWidth - Constants.gui.width - Constants.padding,
-			Constants.padding + Constants.gui.menuBarGuiOffset +
-			40 + Constants.padding);
-	ImGui::SetWindowPos("General Settings", windowPos, ImGuiSetCond_Always);
-}
-
 void Gui::MainMenuBar()
 {
 	if (ImGui::BeginMainMenuBar()) {
@@ -275,7 +256,7 @@ void Gui::MainMenuBar()
 	}
 }
 
-void Gui::Tabs()
+void Gui::TabBar()
 {
 	bool opened = true;
 
@@ -288,13 +269,13 @@ void Gui::Tabs()
 		// ImGuiWindowFlags_AlwaysAutoResize |
 		ImGuiWindowFlags_NoCollapse;
 
-	ImGui::Begin("Tabs", &opened, windowSize, Constants.gui.alpha,
+	ImGui::Begin("TabBar", &opened, windowSize, Constants.gui.alpha,
 			windowFlags);
 
 	ImVec2 windowPos(
 			Globals.windowWidth - Constants.gui.width - Constants.padding,
 			Constants.padding + Constants.gui.menuBarGuiOffset);
-	ImGui::SetWindowPos("Tabs", windowPos, ImGuiSetCond_Always);
+	ImGui::SetWindowPos("TabBar", windowPos, ImGuiSetCond_Always);
 
 	ImGui::PushStyleColor(ImGuiCol_ButtonActive, Constants.gui.tabs.active);
 	if (Globals.tab == GlobalsHolder::Tab_Wave) {
@@ -304,20 +285,73 @@ void Gui::Tabs()
 		ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.tabs.idle);
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, Constants.gui.tabs.hovered);
 	}
-	if (ImGui::Button("Wave"))
+	if (ImGui::Button("Wave")) {
 		Globals.tab = GlobalsHolder::Tab_Wave;
+		settingsOpen = false;
+		waveOpen = true;
+	}
 	ImGui::SameLine();
-	if (Globals.tab == GlobalsHolder::Tab_GeneralSettings) {
+	if (Globals.tab == GlobalsHolder::Tab_Settings) {
 		ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.tabs.active);
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, Constants.gui.tabs.active);
 	} else {
 		ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.tabs.idle);
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, Constants.gui.tabs.hovered);
 	}
-	if (ImGui::Button("General Settings"))
-		Globals.tab = GlobalsHolder::Tab_GeneralSettings;
+	if (ImGui::Button("Settings")) {
+		Globals.tab = GlobalsHolder::Tab_Settings;
+		settingsOpen = true;
+		waveOpen = false;
+	}
 	ImGui::PopStyleColor(2*2+1);
 
+	ImGui::End();
+}
+
+bool Gui::BeginSettingsWindow()
+{
+	if (!settingsOpen)
+		return false;
+	ImVec2 windowSize(Constants.gui.width,
+			Globals.windowHeight - Constants.padding*2 -
+			Constants.gui.menuBarGuiOffset - 40 - Constants.padding);
+	ImGuiWindowFlags windowFlags =
+		ImGuiWindowFlags_NoResize |
+		ImGuiWindowFlags_NoMove |
+		ImGuiWindowFlags_NoCollapse;
+
+	ImGui::Begin("Settings", &settingsOpen,
+			windowSize, Constants.gui.alpha, windowFlags);
+
+	ImVec2 windowPos(
+			Globals.windowWidth - Constants.gui.width - Constants.padding,
+			Constants.padding + Constants.gui.menuBarGuiOffset +
+			40 + Constants.padding);
+	ImGui::SetWindowPos("Settings", windowPos, ImGuiSetCond_Always);
+	return true;
+}
+
+void Gui::WaveWindow()
+{
+	if (!waveOpen)
+		return;
+	ImVec2 windowSize(Constants.gui.width,
+			Globals.windowHeight - Constants.padding*2 -
+			Constants.gui.menuBarGuiOffset - 40 - Constants.padding);
+	ImGuiWindowFlags windowFlags =
+		ImGuiWindowFlags_NoResize |
+		ImGuiWindowFlags_NoMove |
+		ImGuiWindowFlags_NoCollapse;
+
+	ImVec2 windowPos(
+			Globals.windowWidth - Constants.gui.width - Constants.padding,
+			Constants.padding + Constants.gui.menuBarGuiOffset +
+			40 + Constants.padding);
+	ImGui::SetWindowPos("Wave", windowPos, ImGuiSetCond_Always);
+
+	ImGui::Begin("Wave", &waveOpen,
+			windowSize, Constants.gui.alpha, windowFlags);
+	ImGui::Text("asdf");
 	ImGui::End();
 }
 
@@ -352,8 +386,6 @@ void Gui::Update(int dt)
 
 void Gui::Draw()
 {
-	ImGui::End();
-
 	glBindVertexArray(vaoHandle);
 	glBindBuffer(GL_ARRAY_BUFFER, vboHandle);
 	glEnableVertexAttribArray(attribLocationPosition);

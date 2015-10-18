@@ -199,68 +199,71 @@ int main()
 
 		ImGui::NewFrame();
 
-		gui.Tabs();
+		gui.TabBar();
 
-		gui.BeginWindow();
+		if (gui.BeginSettingsWindow()) {
+			if (ImGui::CollapsingHeader("Sampling options")) {
+				if (ImGui::Button("Regenerate samples"))
+					for (int r = 0; r < 3; r++)
+						for (int i = 0; i < 12; i++)
+							notes[r][i].GenerateSamples();
 
-		if (ImGui::CollapsingHeader("Sampling options")) {
-			if (ImGui::Button("Regenerate samples"))
-				for (int r = 0; r < 3; r++)
-					for (int i = 0; i < 12; i++)
-						notes[r][i].GenerateSamples();
+				ImGui::Text("Preview");
+				static int samplesInPreview = 2000;
+				float samplesInPreviewFloat = samplesInPreview;
+				ImGui::SliderFloat("samples in preview", &samplesInPreviewFloat,
+						Constants.gui.samplesInPreviewMin,
+						Constants.gui.samplesInPreviewMax,
+						"%.0f", Constants.gui.samplesInPreviewPower);
+				samplesInPreview = samplesInPreviewFloat;
 
-			ImGui::Text("Preview");
-			static int samplesInPreview = 2000;
-			float samplesInPreviewFloat = samplesInPreview;
-			ImGui::SliderFloat("samples in preview", &samplesInPreviewFloat,
-					Constants.gui.samplesInPreviewMin,
-					Constants.gui.samplesInPreviewMax,
-					"%.0f", Constants.gui.samplesInPreviewPower);
-			samplesInPreview = samplesInPreviewFloat;
+				ImGui::Spacing();
 
-			ImGui::Spacing();
-
-			struct {
-				Note *note;
-				const char *noteName;
-				float samples[44100];
-			} previewNotes[5] = {
-				{ &notes[2][ 0], "C2",  {} },
-				{ &notes[2][10], "A#2", {} },
-				{ &notes[1][ 3], "D#3", {} },
-				{ &notes[0][ 1], "C#4", {} },
-				{ &notes[0][11], "B4",  {} }
-			};
-			for (int n = 0; n < 5; n++) {
-				Note *note = previewNotes[n].note;
-				double x = 0;
-				for (int i = 0; i < samplesInPreview; i++) {
-					double freqCompensation = 1.0;
-					if (Globals.VFC.enabled)
-						freqCompensation = exp(100.0*1.0/note->baseFrequency);
-					previewNotes[n].samples[i] = Globals.volume*freqCompensation*
-						sin(2*M_PI*note->baseFrequency*x);
-					x += 1.0/Constants.samplesPerSecond;
+				struct {
+					Note *note;
+					const char *noteName;
+					float samples[44100];
+				} previewNotes[5] = {
+					{ &notes[2][ 0], "C2",  {} },
+					{ &notes[2][10], "A#2", {} },
+					{ &notes[1][ 3], "D#3", {} },
+					{ &notes[0][ 1], "C#4", {} },
+					{ &notes[0][11], "B4",  {} }
+				};
+				for (int n = 0; n < 5; n++) {
+					Note *note = previewNotes[n].note;
+					double x = 0;
+					for (int i = 0; i < samplesInPreview; i++) {
+						double freqCompensation = 1.0;
+						if (Globals.VFC.enabled)
+							freqCompensation = exp(100.0*1.0/note->baseFrequency);
+						previewNotes[n].samples[i] = Globals.volume*freqCompensation*
+							sin(2*M_PI*note->baseFrequency*x);
+						x += 1.0/Constants.samplesPerSecond;
+					}
+					ImGui::PlotLines(previewNotes[n].noteName, previewNotes[n].samples,
+							samplesInPreview, 0, "", -32767, 32767,
+							ImVec2(0, Constants.gui.graphHeight));
 				}
-				ImGui::PlotLines(previewNotes[n].noteName, previewNotes[n].samples,
-						samplesInPreview, 0, "", -32767, 32767,
-						ImVec2(0, Constants.gui.graphHeight));
+
+				ImGui::Spacing();
+
+				static float volumePercent = Constants.gui.volumePercent;
+				ImGui::SliderFloat("volume", &volumePercent, 0.0f, 100.0f, "%.1f%%");
+				Globals.volume = (32767.0*volumePercent)/100.0;
+
+				ImGui::Spacing();
+
+				if (ImGui::TreeNode("Volume/Frequency compensation\n"
+							"(now disabled in code beacause it's shit)"))
+				{
+					ImGui::TreePop();
+				}
 			}
-
-			ImGui::Spacing();
-
-			static float volumePercent = Constants.gui.volumePercent;
-			ImGui::SliderFloat("volume", &volumePercent, 0.0f, 100.0f, "%.1f%%");
-			Globals.volume = (32767.0*volumePercent)/100.0;
-
-			ImGui::Spacing();
-
-			if (ImGui::TreeNode("Volume/Frequency compensation\n"
-						"(now disabled in code beacause it's shit)"))
-			{
-				ImGui::TreePop();
-			}
+			ImGui::End();
 		}
+
+		gui.WaveWindow();
 
 		gui.MainMenuBar();
 
