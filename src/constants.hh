@@ -59,17 +59,17 @@ const struct
 			"Linear\0Exponential\0Square Root\0\0";
 		int menuBarGuiOffset = 25;
 		struct {
-			ImColor modeLiveIdle        = ImColor::HSV( 60/360.,  37/100.,  40/100., 1.00);
-			ImColor modeLiveHovered     = ImColor::HSV( 60/360.,  40/100.,  67/100., 1.00);
-			ImColor modeLiveActive      = ImColor::HSV( 60/360.,  37/100.,  80/100., 1.00);
+			ImColor modePlayingIdle        = ImColor::HSV( 60/360.,  37/100.,  40/100., 1.00);
+			ImColor modePlayingHovered     = ImColor::HSV( 60/360.,  40/100.,  67/100., 1.00);
+			ImColor modePlayingActive      = ImColor::HSV( 60/360.,  37/100.,  80/100., 1.00);
 
-			ImColor modeWriteIdle       = ImColor::HSV(345/360.,  37/100.,  40/100., 1.00);
-			ImColor modeWriteHovered    = ImColor::HSV(345/360.,  40/100.,  67/100., 1.00);
-			ImColor modeWriteActive     = ImColor::HSV(345/360.,  37/100.,  80/100., 1.00);
+			ImColor modeWritingIdle       = ImColor::HSV(345/360.,  37/100.,  40/100., 1.00);
+			ImColor modeWritingHovered    = ImColor::HSV(345/360.,  40/100.,  67/100., 1.00);
+			ImColor modeWritingActive     = ImColor::HSV(345/360.,  37/100.,  80/100., 1.00);
 
-			ImColor modePlaybackIdle    = ImColor::HSV(150/360.,  37/100.,  40/100., 1.00);
-			ImColor modePlaybackHovered = ImColor::HSV(150/360.,  40/100.,  67/100., 1.00);
-			ImColor modePlaybackActive  = ImColor::HSV(150/360.,  37/100.,  80/100., 1.00);
+			ImColor modeRepeatingIdle    = ImColor::HSV(150/360.,  37/100.,  40/100., 1.00);
+			ImColor modeRepeatingHovered = ImColor::HSV(150/360.,  40/100.,  67/100., 1.00);
+			ImColor modeRepeatingActive  = ImColor::HSV(150/360.,  37/100.,  80/100., 1.00);
 
 			int modeSpacing = 11;
 		} menuBar {};
@@ -91,21 +91,11 @@ struct GlobalsHolder
 	int windowHeight = 700;
 	int volume = 5000;
 
-	struct {
-		bool enabled = true;
-		enum {
-			Linear,
-			Exponential,
-			SquareRoot
-		} mode;
-		double exponentialStrength = 100.0;
-	} VFC;
-
 	enum {
-		Mode_Live,
-		Mode_Write,
-		Mode_Playback
-	} mode = Mode_Live;
+		Mode_Playing,
+		Mode_Writing,
+		Mode_Repeating
+	} mode = Mode_Playing;
 
 	enum {
 		Tab_Settings,
@@ -113,6 +103,7 @@ struct GlobalsHolder
 	} tab = Tab_Settings;
 
 	bool playingOnKeys = true;
+	bool showDemo = false;
 };
 
 extern GlobalsHolder Globals;

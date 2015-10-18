@@ -208,70 +208,72 @@ void Gui::MainMenuBar()
 {
 	if (ImGui::BeginMainMenuBar()) {
 		if (ImGui::BeginMenu("Sythin2")) {
-			if (ImGui::MenuItem("Quit", ""))
+			ImGui::MenuItem("Show Demo window", NULL, &Globals.showDemo);
+			if (ImGui::MenuItem("Quit", NULL))
 				Globals.quit = true;
 			ImGui::EndMenu();
 		}
 
 		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding,
 				ImVec2(Constants.gui.menuBar.modeSpacing, 3));
+		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(12, 0));
 
 		ImGui::SameLine();
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive,
-				Constants.gui.menuBar.modeLiveActive);
-		if (Globals.mode == GlobalsHolder::Mode_Live) {
+				Constants.gui.menuBar.modePlayingActive);
+		if (Globals.mode == GlobalsHolder::Mode_Playing) {
 			ImGui::PushStyleColor(ImGuiCol_Button,
-					Constants.gui.menuBar.modeLiveActive);
+					Constants.gui.menuBar.modePlayingActive);
 			ImGui::PushStyleColor(ImGuiCol_ButtonHovered,
-					Constants.gui.menuBar.modeLiveActive);
+					Constants.gui.menuBar.modePlayingActive);
 		} else {
 			ImGui::PushStyleColor(ImGuiCol_Button,
-					Constants.gui.menuBar.modeLiveIdle);
+					Constants.gui.menuBar.modePlayingIdle);
 			ImGui::PushStyleColor(ImGuiCol_ButtonHovered,
-					Constants.gui.menuBar.modeLiveHovered);
+					Constants.gui.menuBar.modePlayingHovered);
 		}
-		if (ImGui::Button("LIVE"))
-			Globals.mode = GlobalsHolder::Mode_Live;
+		if (ImGui::Button("Playing"))
+			Globals.mode = GlobalsHolder::Mode_Playing;
 
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
 
 		ImGui::SameLine();
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive,
-				Constants.gui.menuBar.modeWriteActive);
-		if (Globals.mode == GlobalsHolder::Mode_Write) {
+				Constants.gui.menuBar.modeWritingActive);
+		if (Globals.mode == GlobalsHolder::Mode_Writing) {
 			ImGui::PushStyleColor(ImGuiCol_Button,
-					Constants.gui.menuBar.modeWriteActive);
+					Constants.gui.menuBar.modeWritingActive);
 			ImGui::PushStyleColor(ImGuiCol_ButtonHovered,
-					Constants.gui.menuBar.modeWriteActive);
+					Constants.gui.menuBar.modeWritingActive);
 		} else {
 			ImGui::PushStyleColor(ImGuiCol_Button,
-					Constants.gui.menuBar.modeWriteIdle);
+					Constants.gui.menuBar.modeWritingIdle);
 			ImGui::PushStyleColor(ImGuiCol_ButtonHovered,
-					Constants.gui.menuBar.modeWriteHovered);
+					Constants.gui.menuBar.modeWritingHovered);
 		}
-		if (ImGui::Button("WRITE"))
-			Globals.mode = GlobalsHolder::Mode_Write;
+		if (ImGui::Button("Writing"))
+			Globals.mode = GlobalsHolder::Mode_Writing;
 
 		ImGui::SameLine();
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive,
-				Constants.gui.menuBar.modePlaybackActive);
-		if (Globals.mode == GlobalsHolder::Mode_Playback) {
+				Constants.gui.menuBar.modeRepeatingActive);
+		if (Globals.mode == GlobalsHolder::Mode_Repeating) {
 			ImGui::PushStyleColor(ImGuiCol_Button,
-					Constants.gui.menuBar.modePlaybackActive);
+					Constants.gui.menuBar.modeRepeatingActive);
 			ImGui::PushStyleColor(ImGuiCol_ButtonHovered,
-					Constants.gui.menuBar.modePlaybackActive);
+					Constants.gui.menuBar.modeRepeatingActive);
 		} else {
 			ImGui::PushStyleColor(ImGuiCol_Button,
-					Constants.gui.menuBar.modePlaybackIdle);
+					Constants.gui.menuBar.modeRepeatingIdle);
 			ImGui::PushStyleColor(ImGuiCol_ButtonHovered,
-					Constants.gui.menuBar.modePlaybackHovered);
+					Constants.gui.menuBar.modeRepeatingHovered);
 		}
-		if (ImGui::Button("PLAYBACK"))
-			Globals.mode = GlobalsHolder::Mode_Playback;
+		if (ImGui::Button("Replaying"))
+			Globals.mode = GlobalsHolder::Mode_Repeating;
 
 		ImGui::PopStyleColor(3*3);
 
-		ImGui::PopStyleVar(2);
+		ImGui::PopStyleVar(3);
 
 		ImGui::EndMainMenuBar();
 	}

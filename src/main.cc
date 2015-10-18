@@ -253,8 +253,6 @@ int main()
 					double x = 0;
 					for (int i = 0; i < samplesInPreview; i++) {
 						double freqCompensation = 1.0;
-						if (Globals.VFC.enabled)
-							freqCompensation = exp(100.0*1.0/note->baseFrequency);
 						previewNotes[n].samples[i] = Globals.volume*freqCompensation*
 							sin(2*M_PI*note->baseFrequency*x);
 						x += 1.0/Constants.samplesPerSecond;
@@ -285,8 +283,8 @@ int main()
 
 		gui.MainMenuBar();
 
-		bool opened = true;
-		ImGui::ShowTestWindow(&opened);
+		if (Globals.showDemo)
+			ImGui::ShowTestWindow(&Globals.showDemo);
 
 		gui.Draw();
 
