@@ -54,7 +54,8 @@ static void ImGuiRenderDrawLists(ImDrawData *draw_data)
 				if (pcmd->UserCallback) {
 					pcmd->UserCallback(cmd_list, pcmd);
 				} else {
-					glBindTexture(GL_TEXTURE_2D, (GLuint)(intptr_t)pcmd->TextureId);
+					glBindTexture(GL_TEXTURE_2D,
+							(GLuint)(intptr_t)pcmd->TextureId);
 					glScissor((int)pcmd->ClipRect.x,
 							(int)(height - pcmd->ClipRect.w),
 							(int)(pcmd->ClipRect.z - pcmd->ClipRect.x),
@@ -210,16 +211,22 @@ void Gui::MainMenuBar()
 			ImGui::EndMenu();
 		}
 
-		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(Constants.gui.menuBar.modeSpacing, 3));
+		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding,
+				ImVec2(Constants.gui.menuBar.modeSpacing, 3));
 
 		ImGui::SameLine();
-		ImGui::PushStyleColor(ImGuiCol_ButtonActive, Constants.gui.menuBar.modeLiveActive);
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive,
+				Constants.gui.menuBar.modeLiveActive);
 		if (Globals.mode == GlobalsHolder::Mode_Live) {
-			ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.menuBar.modeLiveActive);
-			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, Constants.gui.menuBar.modeLiveActive);
+			ImGui::PushStyleColor(ImGuiCol_Button,
+					Constants.gui.menuBar.modeLiveActive);
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered,
+					Constants.gui.menuBar.modeLiveActive);
 		} else {
-			ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.menuBar.modeLiveIdle);
-			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, Constants.gui.menuBar.modeLiveHovered);
+			ImGui::PushStyleColor(ImGuiCol_Button,
+					Constants.gui.menuBar.modeLiveIdle);
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered,
+					Constants.gui.menuBar.modeLiveHovered);
 		}
 		if (ImGui::Button("LIVE"))
 			Globals.mode = GlobalsHolder::Mode_Live;
@@ -227,25 +234,35 @@ void Gui::MainMenuBar()
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
 
 		ImGui::SameLine();
-		ImGui::PushStyleColor(ImGuiCol_ButtonActive, Constants.gui.menuBar.modeWriteActive);
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive,
+				Constants.gui.menuBar.modeWriteActive);
 		if (Globals.mode == GlobalsHolder::Mode_Write) {
-			ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.menuBar.modeWriteActive);
-			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, Constants.gui.menuBar.modeWriteActive);
+			ImGui::PushStyleColor(ImGuiCol_Button,
+					Constants.gui.menuBar.modeWriteActive);
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered,
+					Constants.gui.menuBar.modeWriteActive);
 		} else {
-			ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.menuBar.modeWriteIdle);
-			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, Constants.gui.menuBar.modeWriteHovered);
+			ImGui::PushStyleColor(ImGuiCol_Button,
+					Constants.gui.menuBar.modeWriteIdle);
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered,
+					Constants.gui.menuBar.modeWriteHovered);
 		}
 		if (ImGui::Button("WRITE"))
 			Globals.mode = GlobalsHolder::Mode_Write;
 
 		ImGui::SameLine();
-		ImGui::PushStyleColor(ImGuiCol_ButtonActive, Constants.gui.menuBar.modePlaybackActive);
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive,
+				Constants.gui.menuBar.modePlaybackActive);
 		if (Globals.mode == GlobalsHolder::Mode_Playback) {
-			ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.menuBar.modePlaybackActive);
-			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, Constants.gui.menuBar.modePlaybackActive);
+			ImGui::PushStyleColor(ImGuiCol_Button,
+					Constants.gui.menuBar.modePlaybackActive);
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered,
+					Constants.gui.menuBar.modePlaybackActive);
 		} else {
-			ImGui::PushStyleColor(ImGuiCol_Button, Constants.gui.menuBar.modePlaybackIdle);
-			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, Constants.gui.menuBar.modePlaybackHovered);
+			ImGui::PushStyleColor(ImGuiCol_Button,
+					Constants.gui.menuBar.modePlaybackIdle);
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered,
+					Constants.gui.menuBar.modePlaybackHovered);
 		}
 		if (ImGui::Button("PLAYBACK"))
 			Globals.mode = GlobalsHolder::Mode_Playback;
@@ -343,9 +360,12 @@ void Gui::Draw()
 	glEnableVertexAttribArray(attribLocationUV);
 	glEnableVertexAttribArray(attribLocationColor);
 #define OFFSETOF(TYPE, ELEMENT) ((size_t)&(((TYPE *)0)->ELEMENT))
-	glVertexAttribPointer(attribLocationPosition, 2, GL_FLOAT, GL_FALSE, sizeof(ImDrawVert), (GLvoid*)OFFSETOF(ImDrawVert, pos));
-	glVertexAttribPointer(attribLocationUV, 2, GL_FLOAT, GL_FALSE, sizeof(ImDrawVert), (GLvoid*)OFFSETOF(ImDrawVert, uv));
-	glVertexAttribPointer(attribLocationColor, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(ImDrawVert), (GLvoid*)OFFSETOF(ImDrawVert, col));
+	glVertexAttribPointer(attribLocationPosition, 2, GL_FLOAT, GL_FALSE,
+			sizeof(ImDrawVert), (GLvoid*)OFFSETOF(ImDrawVert, pos));
+	glVertexAttribPointer(attribLocationUV, 2, GL_FLOAT, GL_FALSE,
+			sizeof(ImDrawVert), (GLvoid*)OFFSETOF(ImDrawVert, uv));
+	glVertexAttribPointer(attribLocationColor, 4, GL_UNSIGNED_BYTE, GL_TRUE,
+			sizeof(ImDrawVert), (GLvoid*)OFFSETOF(ImDrawVert, col));
 #undef OFFSETOF
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
