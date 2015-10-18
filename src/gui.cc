@@ -103,6 +103,27 @@ Gui::Gui()
 	io.DisplaySize = ImVec2(Globals.windowWidth, Globals.windowHeight);
 	io.IniFilename = NULL;
 	io.UserData = this;
+	io.KeyRepeatDelay = 5.5;
+	io.KeyRepeatRate = 1.1;
+
+	io.KeyMap[ImGuiKey_Tab] = sf::Keyboard::Tab;
+	io.KeyMap[ImGuiKey_LeftArrow] = sf::Keyboard::Left;
+	io.KeyMap[ImGuiKey_RightArrow] = sf::Keyboard::Right;
+	io.KeyMap[ImGuiKey_UpArrow] = sf::Keyboard::Up;
+	io.KeyMap[ImGuiKey_DownArrow] = sf::Keyboard::Down;
+	io.KeyMap[ImGuiKey_Home] = sf::Keyboard::Home;
+	io.KeyMap[ImGuiKey_End] = sf::Keyboard::End;
+	io.KeyMap[ImGuiKey_Delete] = sf::Keyboard::Delete;
+	io.KeyMap[ImGuiKey_Backspace] = sf::Keyboard::BackSpace;
+	io.KeyMap[ImGuiKey_Enter] = sf::Keyboard::Return;
+	io.KeyMap[ImGuiKey_Escape] = sf::Keyboard::Escape;
+	io.KeyMap[ImGuiKey_Escape] = sf::Keyboard::Escape;
+	io.KeyMap[ImGuiKey_A] = sf::Keyboard::A;
+	io.KeyMap[ImGuiKey_C] = sf::Keyboard::C;
+	io.KeyMap[ImGuiKey_V] = sf::Keyboard::V;
+	io.KeyMap[ImGuiKey_X] = sf::Keyboard::X;
+	io.KeyMap[ImGuiKey_Y] = sf::Keyboard::Y;
+	io.KeyMap[ImGuiKey_Z] = sf::Keyboard::Z;
 
 	const GLchar *vertex_shader =
 		"#version 120\n"
@@ -351,7 +372,14 @@ void Gui::WaveWindow()
 
 	ImGui::Begin("Wave", &waveOpen,
 			windowSize, Constants.gui.alpha, windowFlags);
-	ImGui::Text("asdf");
+
+	static char text[1024*16] = "";
+	// ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0,0));
+	// ImGui::PopStyleVar();
+	ImGui::InputTextMultiline("##source", text, 1024*16,
+			ImVec2(-1.0f, ImGui::GetTextLineHeight()*16),
+			ImGuiInputTextFlags_AllowTabInput);
+
 	ImGui::End();
 }
 
@@ -378,7 +406,7 @@ void Gui::CreateFontTexture(ImFont *imFont)
 void Gui::Update(int dt)
 {
 	ImGuiIO& io = ImGui::GetIO();
-	io.DeltaTime = (float)dt/1000.0f;
+	io.DeltaTime = dt/1000.;
 	io.MousePos = ImVec2(mousePosX, mousePosY);
 	io.MouseDown[0] = mousePressed[0];
 	io.MouseDown[1] = mousePressed[1];

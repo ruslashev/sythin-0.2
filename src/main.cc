@@ -155,21 +155,39 @@ int main()
 					case sf::Event::Closed:
 						ml.window.close();
 						break;
-					case sf::Event::KeyPressed:
-						for (int r = 0; r < 3; r++)
-							for (int i = 0; i < 12; i++)
-								if (ml.event.key.code == notes[r][i].key) {
-									notes[r][i].keyPressed = true;
-									notes[r][i].KeyPressed();
-								}
+					case sf::Event::KeyPressed: {
+						ImGuiIO& io = ImGui::GetIO();
+						io.KeysDown[ml.event.key.code] = true;
+						io.KeyCtrl = ml.event.key.control;
+						io.KeyShift = ml.event.key.shift;
+						if (Globals.playingOnKeys)
+							for (int r = 0; r < 3; r++)
+								for (int i = 0; i < 12; i++)
+									if (ml.event.key.code == notes[r][i].key) {
+										notes[r][i].keyPressed = true;
+										notes[r][i].KeyPressed();
+										// 10 levels of indentation woo
+									}
 						break;
-					case sf::Event::KeyReleased:
-						for (int r = 0; r < 3; r++)
-							for (int i = 0; i < 12; i++)
-								if (ml.event.key.code == notes[r][i].key) {
-									notes[r][i].keyPressed = false;
-									notes[r][i].KeyReleased();
-								}
+					}
+					case sf::Event::KeyReleased: {
+						ImGuiIO& io = ImGui::GetIO();
+						io.KeysDown[ml.event.key.code] = false;
+						io.KeyCtrl = ml.event.key.control;
+						io.KeyShift = ml.event.key.shift;
+						if (Globals.playingOnKeys)
+							for (int r = 0; r < 3; r++)
+								for (int i = 0; i < 12; i++)
+									if (ml.event.key.code == notes[r][i].key) {
+										notes[r][i].keyPressed = false;
+										notes[r][i].KeyReleased();
+									}
+						break;
+					}
+					case sf::Event::TextEntered:
+						if (ml.event.text.unicode > 0 &&
+								ml.event.text.unicode < 0x10000)
+							ImGui::GetIO().AddInputCharacter(ml.event.text.unicode);
 						break;
 					case sf::Event::MouseButtonPressed:
 						gui.mousePressed[ml.event.mouseButton.button] = true;

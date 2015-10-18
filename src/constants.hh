@@ -111,6 +111,8 @@ struct GlobalsHolder
 		Tab_Settings,
 		Tab_Wave
 	} tab = Tab_Settings;
+
+	bool playingOnKeys = true;
 };
 
 extern GlobalsHolder Globals;
