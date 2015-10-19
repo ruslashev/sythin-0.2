@@ -90,8 +90,8 @@ Gui::Gui()
 	attribLocationPosition = 0, attribLocationUV = 0, attribLocationColor = 0;
 	vboHandle = 0, vaoHandle = 0, elementsHandle = 0;
 
-	settingsOpen = true;
-	waveOpen = false;
+	waveOpen = true;
+	settingsOpen = false;
 
 	mousePosX = 0;
 	mousePosY = 0;
@@ -358,29 +358,62 @@ void Gui::WaveWindow()
 {
 	if (!waveOpen)
 		return;
-	ImVec2 windowSize(Constants.gui.width,
-			Globals.windowHeight - Constants.padding*2 -
-			Constants.gui.menuBarGuiOffset - 40 - Constants.padding);
+	ImVec2 windowSize(Globals.windowWidth - Constants.padding - Constants.gui.width - Constants.padding - Constants.padding,
+			400);
 	ImGuiWindowFlags windowFlags =
 		ImGuiWindowFlags_NoResize |
 		ImGuiWindowFlags_NoMove |
 		ImGuiWindowFlags_NoCollapse;
 
 	ImVec2 windowPos(
-			Globals.windowWidth - Constants.gui.width - Constants.padding,
-			Constants.padding + Constants.gui.menuBarGuiOffset +
-			40 + Constants.padding);
+			Constants.padding,
+			Constants.padding + Constants.gui.menuBarGuiOffset);
 	ImGui::SetWindowPos("Wave", windowPos, ImGuiSetCond_Always);
 
 	ImGui::Begin("Wave", &waveOpen,
 			windowSize, Constants.gui.alpha, windowFlags);
 
-	static char text[1024*16] = "";
-	// ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0,0));
-	// ImGui::PopStyleVar();
-	ImGui::InputTextMultiline("##source", text, 1024*16,
-			ImVec2(-1.0f, ImGui::GetTextLineHeight()*16),
-			ImGuiInputTextFlags_AllowTabInput);
+	static bool read = false;
+	static char buffer[16*1024];
+	static bool failedToOpen = false, failedToRead = false;
+	if (ImGui::Button("(Re)Load file")) {
+		FILE *f = fopen("wave.lua", "rb");
+		if (!f) {
+			failedToOpen = true;
+			failedToRead = false;
+		} else {
+			fseek(f, 0, SEEK_END);
+			size_t fileSize = ftell(f);
+			rewind(f);
+
+			if (fread(buffer, 1, fileSize, f) != fileSize) {
+				failedToOpen = false;
+				failedToRead = true;
+			} else
+				read = true;
+			fclose(f);
+		}
+	}
+	if (failedToOpen) {
+		ImGui::TextColored(ImVec4(1, 0.3, 0.3, 1),
+				"Failed to open file for reading");
+		ImGui::End();
+		return;
+	}
+	if (failedToRead) {
+		ImGui::TextColored(ImVec4(1, 0.3, 0.3, 1),
+				"Failed to read file");
+		ImGui::End();
+		return;
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Compile")) {
+	}
+
+	if (read)
+		ImGui::InputTextMultiline("##source", buffer, 16*1024,
+				ImVec2(-1.0f, ImGui::GetTextLineHeight()*10),
+				ImGuiInputTextFlags_AllowTabInput);
 
 	ImGui::End();
 }

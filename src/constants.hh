@@ -100,7 +100,7 @@ struct GlobalsHolder
 	enum {
 		Tab_Settings,
 		Tab_Wave
-	} tab = Tab_Settings;
+	} tab = Tab_Wave;
 
 	bool playingOnKeys = true;
 	bool showDemo = false;

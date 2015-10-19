@@ -18,7 +18,7 @@ public:
 	int attribLocationPosition, attribLocationUV, attribLocationColor;
 	unsigned int vboHandle, vaoHandle, elementsHandle;
 
-	bool settingsOpen, waveOpen;
+	bool waveOpen, settingsOpen;
 
 	int mousePosX;
 	int mousePosY;
