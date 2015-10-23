@@ -373,47 +373,89 @@ void Gui::WaveWindow()
 	ImGui::Begin("Wave", &waveOpen,
 			windowSize, Constants.gui.alpha, windowFlags);
 
-	static bool read = false;
-	static char buffer[16*1024];
-	static bool failedToOpen = false, failedToRead = false;
-	if (ImGui::Button("(Re)Load file")) {
+	static char buffer[16*1024] = { '\0' };
+	static bool failedToSave = false, failedToRead = false;
+	static bool once = true;
+	if (once) {
+		once = false;
+		memset(buffer, 0, 16*1024);
 		FILE *f = fopen("wave.lua", "rb");
 		if (!f) {
-			failedToOpen = true;
-			failedToRead = false;
-		} else {
-			fseek(f, 0, SEEK_END);
-			size_t fileSize = ftell(f);
-			rewind(f);
-
-			if (fread(buffer, 1, fileSize, f) != fileSize) {
-				failedToOpen = false;
-				failedToRead = true;
-			} else
-				read = true;
+			f = fopen("wave.lua", "wb");
+			fputs(Constants.defaultWaveScript, f);
 			fclose(f);
+			f = fopen("wave.lua", "rb");
+			if (!f) {
+				failedToSave = true;
+				failedToRead = false;
+			}
 		}
+		fseek(f, 0, SEEK_END);
+		size_t fileSize = ftell(f);
+		rewind(f);
+
+		if (fread(buffer, 1, fileSize, f) != fileSize) {
+			failedToSave = false;
+			failedToRead = true;
+		}
+		fclose(f);
+
 	}
-	if (failedToOpen) {
+	if (ImGui::Button("Compile")) {
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Save changes to file")) {
+		FILE *f = fopen("wave.lua", "wb");
+		if (!f) {
+			failedToSave = true;
+			failedToRead = false;
+		}
+		fputs(buffer, f);
+		fclose(f);
+	}
+	ImGui::SameLine();
+	static bool dontAskNextTime = false;
+	if (ImGui::Button("Re-read file")) {
+		if (dontAskNextTime)
+			once = true;
+		else
+			ImGui::OpenPopup("Discard changes?");
+	}
+	if (ImGui::BeginPopupModal("Discard changes?", NULL,
+				ImGuiWindowFlags_NoMove |ImGuiWindowFlags_AlwaysAutoResize)) {
+		ImGui::Text("Your changes will be overwritten and discarded.\nThis operation cannot be undone!\n");
+		ImGui::Separator();
+
+		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+		ImGui::Checkbox("Don't ask me next time", &dontAskNextTime);
+		ImGui::PopStyleVar();
+
+		if (ImGui::Button("OK", ImVec2(120,0))) {
+			once = true;
+			ImGui::CloseCurrentPopup();
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Cancel", ImVec2(120,0)))
+			ImGui::CloseCurrentPopup();
+		ImGui::EndPopup();
+	}
+
+	if (failedToSave) {
 		ImGui::TextColored(ImVec4(1, 0.3, 0.3, 1),
-				"Failed to open file for reading");
+				"Failed to save new file \"wave.lua\" (this shouldn't happen)");
 		ImGui::End();
 		return;
 	}
 	if (failedToRead) {
 		ImGui::TextColored(ImVec4(1, 0.3, 0.3, 1),
-				"Failed to read file");
+				"Failed to read file \"wave.lua\"");
 		ImGui::End();
 		return;
 	}
-	ImGui::SameLine();
-	if (ImGui::Button("Compile")) {
-	}
 
-	if (read)
-		ImGui::InputTextMultiline("##source", buffer, 16*1024,
-				ImVec2(-1.0f, ImGui::GetTextLineHeight()*10),
-				ImGuiInputTextFlags_AllowTabInput);
+	ImGui::InputTextMultiline("##source", buffer, 16*1024,
+			ImVec2(-1.0f, ImGui::GetTextLineHeight()*10),
+			ImGuiInputTextFlags_AllowTabInput);
 
 	ImGui::End();
 }

@@ -81,6 +81,10 @@ const struct
 			ImColor active  = ImColor::HSV(0/360.,  37/100.,  80/100., 1.00);
 		} tabs {};
 	} gui {};
+	const char *defaultWaveScript =
+		"function wave(w, t)\n"
+		"	return sin(w*t)\n"
+		"end\n";
 } Constants {};
 
 struct GlobalsHolder
