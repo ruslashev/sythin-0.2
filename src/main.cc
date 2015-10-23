@@ -1,10 +1,11 @@
 #include "constants.hh"
 #include "conv.hh"
-#include "note.hh"
-#include "note_atlas.hh"
 #include "font.hh"
 #include "fontloader.hh"
 #include "gui.hh"
+#include "key.hh"
+#include "note_atlas.hh"
+#include "note.hh"
 
 #include <GL/glew.h>
 #include <SFML/OpenGL.hpp>
@@ -60,92 +61,92 @@ int main()
 	if (!note_atlas::CreateNoteTexture(sfFont, &noteNamesAtlas))
 		return 1;
 
-	Note notes[3][12];
+	Key keys[3][12];
 	int hue = 0;
 	for (int r = 0; r < 3; r++)
 		for (int i = 11; i >= 0; i--) {
-			notes[r][i].SetHue((hue++/36.0)*360);
+			keys[r][i].SetHue((hue++/36.0)*360);
 			int x = Constants.padding + i*(Constants.rectangle.size + Constants.padding);
 			int y = Globals.windowHeight - Constants.padding - Constants.rectangle.size -
 				(3-r-1)*(Constants.rectangle.size + Constants.padding);
-			notes[r][i].SetPosition(x, y);
-			notes[r][i].SetTexture(&noteNamesAtlas);
+			keys[r][i].SetPosition(x, y);
+			keys[r][i].SetTexture(&noteNamesAtlas);
 		}
 
-	notes[0][ 0].key = sf::Keyboard::Num1;
-	notes[0][ 1].key = sf::Keyboard::Num2;
-	notes[0][ 2].key = sf::Keyboard::Num3;
-	notes[0][ 3].key = sf::Keyboard::Num4;
-	notes[0][ 4].key = sf::Keyboard::Num5;
-	notes[0][ 5].key = sf::Keyboard::Num6;
-	notes[0][ 6].key = sf::Keyboard::Num7;
-	notes[0][ 7].key = sf::Keyboard::Num8;
-	notes[0][ 8].key = sf::Keyboard::Num9;
-	notes[0][ 9].key = sf::Keyboard::Num0;
-	notes[0][10].key = sf::Keyboard::Dash;
-	notes[0][11].key = sf::Keyboard::Equal;
-	notes[0][ 0].SetNoteName(conv::C,  4);
-	notes[0][ 1].SetNoteName(conv::Cs, 4);
-	notes[0][ 2].SetNoteName(conv::D,  4);
-	notes[0][ 3].SetNoteName(conv::Ds, 4);
-	notes[0][ 4].SetNoteName(conv::E,  4);
-	notes[0][ 5].SetNoteName(conv::F,  4);
-	notes[0][ 6].SetNoteName(conv::Fs, 4);
-	notes[0][ 7].SetNoteName(conv::G,  4);
-	notes[0][ 8].SetNoteName(conv::Gs, 4);
-	notes[0][ 9].SetNoteName(conv::A,  4);
-	notes[0][10].SetNoteName(conv::As, 4);
-	notes[0][11].SetNoteName(conv::B,  4);
+	keys[0][ 0].key = sf::Keyboard::Num1;
+	keys[0][ 1].key = sf::Keyboard::Num2;
+	keys[0][ 2].key = sf::Keyboard::Num3;
+	keys[0][ 3].key = sf::Keyboard::Num4;
+	keys[0][ 4].key = sf::Keyboard::Num5;
+	keys[0][ 5].key = sf::Keyboard::Num6;
+	keys[0][ 6].key = sf::Keyboard::Num7;
+	keys[0][ 7].key = sf::Keyboard::Num8;
+	keys[0][ 8].key = sf::Keyboard::Num9;
+	keys[0][ 9].key = sf::Keyboard::Num0;
+	keys[0][10].key = sf::Keyboard::Dash;
+	keys[0][11].key = sf::Keyboard::Equal;
+	keys[0][ 0].SetNoteName(conv::C,  4);
+	keys[0][ 1].SetNoteName(conv::Cs, 4);
+	keys[0][ 2].SetNoteName(conv::D,  4);
+	keys[0][ 3].SetNoteName(conv::Ds, 4);
+	keys[0][ 4].SetNoteName(conv::E,  4);
+	keys[0][ 5].SetNoteName(conv::F,  4);
+	keys[0][ 6].SetNoteName(conv::Fs, 4);
+	keys[0][ 7].SetNoteName(conv::G,  4);
+	keys[0][ 8].SetNoteName(conv::Gs, 4);
+	keys[0][ 9].SetNoteName(conv::A,  4);
+	keys[0][10].SetNoteName(conv::As, 4);
+	keys[0][11].SetNoteName(conv::B,  4);
 
-	notes[1][ 0].key = sf::Keyboard::Q;
-	notes[1][ 1].key = sf::Keyboard::W;
-	notes[1][ 2].key = sf::Keyboard::E;
-	notes[1][ 3].key = sf::Keyboard::R;
-	notes[1][ 4].key = sf::Keyboard::T;
-	notes[1][ 5].key = sf::Keyboard::Y;
-	notes[1][ 6].key = sf::Keyboard::U;
-	notes[1][ 7].key = sf::Keyboard::I;
-	notes[1][ 8].key = sf::Keyboard::O;
-	notes[1][ 9].key = sf::Keyboard::P;
-	notes[1][10].key = sf::Keyboard::LBracket;
-	notes[1][11].key = sf::Keyboard::RBracket;
-	notes[1][ 0].SetNoteName(conv::C,  3);
-	notes[1][ 1].SetNoteName(conv::Cs, 3);
-	notes[1][ 2].SetNoteName(conv::D,  3);
-	notes[1][ 3].SetNoteName(conv::Ds, 3);
-	notes[1][ 4].SetNoteName(conv::E,  3);
-	notes[1][ 5].SetNoteName(conv::F,  3);
-	notes[1][ 6].SetNoteName(conv::Fs, 3);
-	notes[1][ 7].SetNoteName(conv::G,  3);
-	notes[1][ 8].SetNoteName(conv::Gs, 3);
-	notes[1][ 9].SetNoteName(conv::A,  3);
-	notes[1][10].SetNoteName(conv::As, 3);
-	notes[1][11].SetNoteName(conv::B,  3);
+	keys[1][ 0].key = sf::Keyboard::Q;
+	keys[1][ 1].key = sf::Keyboard::W;
+	keys[1][ 2].key = sf::Keyboard::E;
+	keys[1][ 3].key = sf::Keyboard::R;
+	keys[1][ 4].key = sf::Keyboard::T;
+	keys[1][ 5].key = sf::Keyboard::Y;
+	keys[1][ 6].key = sf::Keyboard::U;
+	keys[1][ 7].key = sf::Keyboard::I;
+	keys[1][ 8].key = sf::Keyboard::O;
+	keys[1][ 9].key = sf::Keyboard::P;
+	keys[1][10].key = sf::Keyboard::LBracket;
+	keys[1][11].key = sf::Keyboard::RBracket;
+	keys[1][ 0].SetNoteName(conv::C,  3);
+	keys[1][ 1].SetNoteName(conv::Cs, 3);
+	keys[1][ 2].SetNoteName(conv::D,  3);
+	keys[1][ 3].SetNoteName(conv::Ds, 3);
+	keys[1][ 4].SetNoteName(conv::E,  3);
+	keys[1][ 5].SetNoteName(conv::F,  3);
+	keys[1][ 6].SetNoteName(conv::Fs, 3);
+	keys[1][ 7].SetNoteName(conv::G,  3);
+	keys[1][ 8].SetNoteName(conv::Gs, 3);
+	keys[1][ 9].SetNoteName(conv::A,  3);
+	keys[1][10].SetNoteName(conv::As, 3);
+	keys[1][11].SetNoteName(conv::B,  3);
 
-	notes[2][ 0].key = sf::Keyboard::A;
-	notes[2][ 1].key = sf::Keyboard::S;
-	notes[2][ 2].key = sf::Keyboard::D;
-	notes[2][ 3].key = sf::Keyboard::F;
-	notes[2][ 4].key = sf::Keyboard::G;
-	notes[2][ 5].key = sf::Keyboard::H;
-	notes[2][ 6].key = sf::Keyboard::J;
-	notes[2][ 7].key = sf::Keyboard::K;
-	notes[2][ 8].key = sf::Keyboard::L;
-	notes[2][ 9].key = sf::Keyboard::SemiColon;
-	notes[2][10].key = sf::Keyboard::Quote;
-	notes[2][11].key = sf::Keyboard::Return;
-	notes[2][ 0].SetNoteName(conv::C,  2);
-	notes[2][ 1].SetNoteName(conv::Cs, 2);
-	notes[2][ 2].SetNoteName(conv::D,  2);
-	notes[2][ 3].SetNoteName(conv::Ds, 2);
-	notes[2][ 4].SetNoteName(conv::E,  2);
-	notes[2][ 5].SetNoteName(conv::F,  2);
-	notes[2][ 6].SetNoteName(conv::Fs, 2);
-	notes[2][ 7].SetNoteName(conv::G,  2);
-	notes[2][ 8].SetNoteName(conv::Gs, 2);
-	notes[2][ 9].SetNoteName(conv::A,  2);
-	notes[2][10].SetNoteName(conv::As, 2);
-	notes[2][11].SetNoteName(conv::B,  2);
+	keys[2][ 0].key = sf::Keyboard::A;
+	keys[2][ 1].key = sf::Keyboard::S;
+	keys[2][ 2].key = sf::Keyboard::D;
+	keys[2][ 3].key = sf::Keyboard::F;
+	keys[2][ 4].key = sf::Keyboard::G;
+	keys[2][ 5].key = sf::Keyboard::H;
+	keys[2][ 6].key = sf::Keyboard::J;
+	keys[2][ 7].key = sf::Keyboard::K;
+	keys[2][ 8].key = sf::Keyboard::L;
+	keys[2][ 9].key = sf::Keyboard::SemiColon;
+	keys[2][10].key = sf::Keyboard::Quote;
+	keys[2][11].key = sf::Keyboard::Return;
+	keys[2][ 0].SetNoteName(conv::C,  2);
+	keys[2][ 1].SetNoteName(conv::Cs, 2);
+	keys[2][ 2].SetNoteName(conv::D,  2);
+	keys[2][ 3].SetNoteName(conv::Ds, 2);
+	keys[2][ 4].SetNoteName(conv::E,  2);
+	keys[2][ 5].SetNoteName(conv::F,  2);
+	keys[2][ 6].SetNoteName(conv::Fs, 2);
+	keys[2][ 7].SetNoteName(conv::G,  2);
+	keys[2][ 8].SetNoteName(conv::Gs, 2);
+	keys[2][ 9].SetNoteName(conv::A,  2);
+	keys[2][10].SetNoteName(conv::As, 2);
+	keys[2][11].SetNoteName(conv::B,  2);
 
 	while (ml.Update()) {
 		sf::Time realTime = ml.clock.getElapsedTime();
@@ -163,9 +164,9 @@ int main()
 						if (Globals.playingOnKeys)
 							for (int r = 0; r < 3; r++)
 								for (int i = 0; i < 12; i++)
-									if (ml.event.key.code == notes[r][i].key) {
-										notes[r][i].keyPressed = true;
-										notes[r][i].KeyPressed();
+									if (ml.event.key.code == keys[r][i].key) {
+										keys[r][i].keyPressed = true;
+										keys[r][i].KeyPressed();
 										// 10 levels of indentation woo
 									}
 						break;
@@ -178,9 +179,9 @@ int main()
 						if (Globals.playingOnKeys)
 							for (int r = 0; r < 3; r++)
 								for (int i = 0; i < 12; i++)
-									if (ml.event.key.code == notes[r][i].key) {
-										notes[r][i].keyPressed = false;
-										notes[r][i].KeyReleased();
+									if (ml.event.key.code == keys[r][i].key) {
+										keys[r][i].keyPressed = false;
+										keys[r][i].KeyReleased();
 									}
 						break;
 					}
@@ -209,9 +210,6 @@ int main()
 
 			gui.Update(Constants.updateMilliseconds);
 
-			for (int r = 0; r < 3; r++)
-				for (int i = 0; i < 12; i++)
-					notes[r][i].Update();
 			ml.simulatedTime += sf::milliseconds(Constants.updateMilliseconds);
 		}
 
@@ -224,7 +222,7 @@ int main()
 				if (ImGui::Button("Regenerate samples"))
 					for (int r = 0; r < 3; r++)
 						for (int i = 0; i < 12; i++)
-							notes[r][i].GenerateSamples();
+							keys[r][i].GenerateSamples();
 
 				ImGui::Text("Preview");
 				static int samplesInPreview = 2000;
@@ -238,23 +236,21 @@ int main()
 				ImGui::Spacing();
 
 				struct {
-					Note *note;
+					Key *key;
 					const char *noteName;
 					float samples[44100];
 				} previewNotes[5] = {
-					{ &notes[2][ 0], "C2",  {} },
-					{ &notes[2][10], "A#2", {} },
-					{ &notes[1][ 3], "D#3", {} },
-					{ &notes[0][ 1], "C#4", {} },
-					{ &notes[0][11], "B4",  {} }
+					{ &keys[2][ 0], "C2",  {} },
+					{ &keys[2][10], "A#2", {} },
+					{ &keys[1][ 3], "D#3", {} },
+					{ &keys[0][ 1], "C#4", {} },
+					{ &keys[0][11], "B4",  {} }
 				};
 				for (int n = 0; n < 5; n++) {
-					Note *note = previewNotes[n].note;
 					double x = 0;
 					for (int i = 0; i < samplesInPreview; i++) {
-						double freqCompensation = 1.0;
-						previewNotes[n].samples[i] = Globals.volume*freqCompensation*
-							sin(2*M_PI*note->baseFrequency*x);
+						previewNotes[n].samples[i] = Globals.volume*
+							sin(2*M_PI*previewNotes[n].key->baseFrequency*x);
 						x += 1.0/Constants.samplesPerSecond;
 					}
 					ImGui::PlotLines(previewNotes[n].noteName, previewNotes[n].samples,
@@ -272,9 +268,7 @@ int main()
 
 				if (ImGui::TreeNode("Volume/Frequency compensation\n"
 							"(now disabled in code beacause it's shit)"))
-				{
 					ImGui::TreePop();
-				}
 			}
 			ImGui::End();
 		}
@@ -290,7 +284,7 @@ int main()
 
 		for (int r = 0; r < 3; r++)
 			for (int i = 0; i < 12; i++)
-				notes[r][i].Draw(&ml.window);
+				keys[r][i].Draw(&ml.window);
 
 		ml.Display();
 	}

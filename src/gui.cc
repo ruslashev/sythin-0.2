@@ -401,6 +401,7 @@ void Gui::WaveWindow()
 		fclose(f);
 
 	}
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 4));
 	if (ImGui::Button("Compile")) {
 	}
 	ImGui::SameLine();
@@ -421,6 +422,7 @@ void Gui::WaveWindow()
 		else
 			ImGui::OpenPopup("Discard changes?");
 	}
+	ImGui::PopStyleVar();
 	if (ImGui::BeginPopupModal("Discard changes?", NULL,
 				ImGuiWindowFlags_NoMove |ImGuiWindowFlags_AlwaysAutoResize)) {
 		ImGui::Text("Your changes will be overwritten and discarded.\nThis operation cannot be undone!\n");
