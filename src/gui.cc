@@ -415,25 +415,18 @@ void Gui::WaveWindow()
 		fclose(f);
 	}
 	ImGui::SameLine();
-	static bool dontAskNextTime = false;
-	if (ImGui::Button("Re-read file")) {
-		if (dontAskNextTime)
-			once = true;
-		else
-			ImGui::OpenPopup("Discard changes?");
-	}
+	if (ImGui::Button("Re-read file"))
+		ImGui::OpenPopup("Discard changes?");
+	ImGui::SameLine();
 	if (ImGui::Button("Restart with clean file")) {
 	}
 	ImGui::Text("todo: merge these buttons to FileOps modal");
 	ImGui::PopStyleVar();
+
 	if (ImGui::BeginPopupModal("Discard changes?", NULL,
 				ImGuiWindowFlags_NoMove |ImGuiWindowFlags_AlwaysAutoResize)) {
 		ImGui::Text("Your changes will be overwritten and discarded.\nThis operation cannot be undone!\n");
-		ImGui::Separator();
-
-		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-		ImGui::Checkbox("Don't ask me next time", &dontAskNextTime);
-		ImGui::PopStyleVar();
+		// ImGui::Separator();
 
 		if (ImGui::Button("OK", ImVec2(120,0))) {
 			once = true;

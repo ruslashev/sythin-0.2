@@ -15,10 +15,9 @@ Key::Key()
 	// 			Globals.windowHeight - Constants.padding*2));
 	// lineShape.setFillColor(Constants.line.color);
 	keyPressed = false;
-
-	playSound.setBuffer(playSoundBuffer);
 }
 
+/*
 void Key::GenerateSamples()
 {
 	sf::Int16 playSamples[Constants.samplesPerSecond];
@@ -37,6 +36,7 @@ void Key::GenerateSamples()
 		throw;
 	}
 }
+*/
 
 void Key::createSprites()
 {

@@ -1,6 +1,8 @@
 #ifndef CONSTANTS_HH
 #define CONSTANTS_HH
 
+#include "script.hh"
+
 #include <SFML/Graphics.hpp>
 #include "../imgui/imgui.h"
 
@@ -41,6 +43,7 @@ const struct
 
 	int channels = 1;
 	int samplesPerSecond = 44100;
+	int maxSamples = 60*samplesPerSecond;
 	double stdTuning = 440;
 
 	int notesViewWidth =
@@ -108,6 +111,9 @@ struct GlobalsHolder
 
 	bool playingOnKeys = true;
 	bool showDemo = false;
+
+	std::string errorMessage = "";
+	Script *tempScriptPtr;
 };
 
 extern GlobalsHolder Globals;
