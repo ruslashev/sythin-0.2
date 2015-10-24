@@ -6,6 +6,7 @@
 #include "key.hh"
 #include "note_atlas.hh"
 #include "note.hh"
+#include "script.hh"
 
 #include <GL/glew.h>
 #include <SFML/OpenGL.hpp>
@@ -43,6 +44,8 @@ public:
 
 int main()
 {
+	Script ye;
+
 	MainLoop ml;
 
 	Gui gui;

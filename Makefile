@@ -14,7 +14,7 @@ CXXFLAGS = -Wall -Wextra -Werror -g -std=c++0x
 IMGUI_CXXFLAGS = -g -std=c++0x
 CC = gcc
 CCFLAGS = -w -fpermissive
-LDFLAGS = -lsfml-audio -lsfml-graphics -lsfml-window -lsfml-system -lGLEW -lGL
+LDFLAGS = -lsfml-audio -lsfml-graphics -lsfml-window -lsfml-system -lGLEW -lGL -llua
 EXECNAME = sythin2
 
 all: objdir $(EXECNAME)

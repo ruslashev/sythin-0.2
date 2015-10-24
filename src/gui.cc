@@ -422,6 +422,9 @@ void Gui::WaveWindow()
 		else
 			ImGui::OpenPopup("Discard changes?");
 	}
+	if (ImGui::Button("Restart with clean file")) {
+	}
+	ImGui::Text("todo: merge these buttons to FileOps modal");
 	ImGui::PopStyleVar();
 	if (ImGui::BeginPopupModal("Discard changes?", NULL,
 				ImGuiWindowFlags_NoMove |ImGuiWindowFlags_AlwaysAutoResize)) {

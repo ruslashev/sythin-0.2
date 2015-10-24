@@ -1,3 +1,3 @@
 function wave(w, t)
-	return sin(w*t)
+	return (w + t * 2)
 end
