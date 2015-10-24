@@ -1,3 +1,3 @@
 function wave(w, t)
-	return (w + t * 2)
+	return math.sin(w*t)
 end
