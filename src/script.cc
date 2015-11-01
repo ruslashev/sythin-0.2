@@ -4,11 +4,12 @@ Script::Script()
 {
 	L = luaL_newstate();
 	luaL_openlibs(L);
+	puts("did u evn");
 }
 
 void Script::CopyAndExecute(const char *source)
 {
-	int error = luaL_loadstring(L, source);
+	int error = luaL_loadfile(L, source);
 	error |= lua_pcall(L, 0, LUA_MULTRET, 0);
 	if (error)
 		panic("failed to load file");
@@ -33,7 +34,7 @@ double Script::GetValue(double omega, double time)
 void Script::panic(std::string msg)
 {
 	const char *err = lua_tostring(L, -1);
-	printf("Error \"%s\": %s\n", msg, err);
+	printf("Error \"%s\": %s\n", msg.c_str(), err);
 
 	lua_getglobal(L, "debug");
 	lua_getfield(L, -1, "traceback");

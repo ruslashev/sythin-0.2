@@ -17,31 +17,10 @@ Key::Key()
 	keyPressed = false;
 }
 
-/*
-void Key::GenerateSamples()
+void Key::CreateSprites()
 {
-	sf::Int16 playSamples[Constants.samplesPerSecond];
-	double omega = 2*M_PI*baseFrequency;
-	double period = 1 / baseFrequency;
-	unsigned int samples = period*Constants.samplesPerSecond;
-	double x = 0;
-	for (unsigned int i = 0; i < samples; i++) {
-		playSamples[i] = Globals.volume*sin(omega*x);
-		x += 1.0/Constants.samplesPerSecond;
-	}
-
-	if (!playSoundBuffer.loadFromSamples(playSamples, samples,
-				Constants.channels, Constants.samplesPerSecond)) {
-		puts("Failed to copy sound buffer");
-		throw;
-	}
-}
-*/
-
-void Key::createSprites()
-{
-	sf::IntRect rect = note_atlas::LookupNotePosition(noteLetter,
-				noteAccidental, noteOctave);
+	sf::IntRect rect = note_atlas::LookupNotePosition(note.letter,
+				note.accidental, note.octave);
 	textSprite.setSize(sf::Vector2f(rect.width, rect.height));
 	textSprite.setTextureRect(rect);
 	textSprite.setOutlineThickness(Constants.text.outline);
@@ -76,44 +55,6 @@ void Key::SetHue(int h)
 	pressedOutlineColor = conv::HSVtoRGB(h, pressedSaturation, outlineValue);
 }
 
-void Key::SetNoteName(conv::Name nNoteName, int octave)
-{
-	noteName = nNoteName;
-	baseFrequency = conv::NoteNameToFreq(noteName, octave);
-	GenerateSamples();
-
-	switch (noteName) {
-		case conv::A: case conv::As:
-			noteLetter = 'A'; break;
-		case conv::B:
-			noteLetter = 'B'; break;
-		case conv::C: case conv::Cs:
-			noteLetter = 'C'; break;
-		case conv::D: case conv::Ds:
-			noteLetter = 'D'; break;
-		case conv::E:
-			noteLetter = 'E'; break;
-		case conv::F: case conv::Fs:
-			noteLetter = 'F'; break;
-		case conv::G: case conv::Gs:
-			noteLetter = 'G'; break;
-	}
-	switch (noteName) {
-		case conv::As:
-		case conv::Cs:
-		case conv::Ds:
-		case conv::Fs:
-		case conv::Gs:
-			noteAccidental = '#';
-			break;
-		default:
-			noteAccidental = ' ';
-			break;
-	}
-	noteOctave = octave;
-	createSprites();
-}
-
 void Key::SetTexture(sf::Texture *texture)
 {
 	textSprite.setTexture(texture);
@@ -138,12 +79,12 @@ void Key::Draw(sf::RenderWindow *window)
 
 void Key::KeyPressed()
 {
-	playSound.setLoop(true);
-	playSound.play();
+	note.sound.setLoop(true);
+	note.sound.play();
 }
 
 void Key::KeyReleased()
 {
-	playSound.setLoop(false);
+	note.sound.setLoop(false);
 }
 

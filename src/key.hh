@@ -2,6 +2,7 @@
 #define KEY_HH
 
 #include "conv.hh"
+#include "note.hh"
 
 #include <SFML/Graphics.hpp>
 #include <vector>
@@ -16,20 +17,16 @@ class Key
 		pressedColor, pressedOutlineColor;
 	sf::RectangleShape textSprite;
 
-	void createSprites();
 public:
 	sf::Keyboard::Key key;
 	bool keyPressed;
 
-	conv::Name noteName;
-	char noteLetter;
-	char noteAccidental;
-	int noteOctave;
+	Note note;
 
 	Key();
+	void CreateSprites();
 	void SetPosition(int x, int y);
 	void SetHue(int h);
-	void SetNoteName(conv::Name nNoteName, int octave);
 	void SetTexture(sf::Texture *texture);
 	void Draw(sf::RenderWindow *window);
 

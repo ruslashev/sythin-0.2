@@ -43,7 +43,7 @@ const struct
 
 	int channels = 1;
 	int samplesPerSecond = 44100;
-	int maxSamples = 60*samplesPerSecond;
+	unsigned long long int maxSamples = 2*samplesPerSecond;
 	double stdTuning = 440;
 
 	int notesViewWidth =
@@ -113,7 +113,6 @@ struct GlobalsHolder
 	bool showDemo = false;
 
 	std::string errorMessage = "";
-	Script *tempScriptPtr;
 };
 
 extern GlobalsHolder Globals;

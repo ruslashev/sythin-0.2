@@ -44,7 +44,7 @@ public:
 
 int main()
 {
-	Script ye;
+	Script script;
 
 	MainLoop ml;
 
@@ -88,18 +88,18 @@ int main()
 	keys[0][ 9].key = sf::Keyboard::Num0;
 	keys[0][10].key = sf::Keyboard::Dash;
 	keys[0][11].key = sf::Keyboard::Equal;
-	keys[0][ 0].SetNoteName(conv::C,  4);
-	keys[0][ 1].SetNoteName(conv::Cs, 4);
-	keys[0][ 2].SetNoteName(conv::D,  4);
-	keys[0][ 3].SetNoteName(conv::Ds, 4);
-	keys[0][ 4].SetNoteName(conv::E,  4);
-	keys[0][ 5].SetNoteName(conv::F,  4);
-	keys[0][ 6].SetNoteName(conv::Fs, 4);
-	keys[0][ 7].SetNoteName(conv::G,  4);
-	keys[0][ 8].SetNoteName(conv::Gs, 4);
-	keys[0][ 9].SetNoteName(conv::A,  4);
-	keys[0][10].SetNoteName(conv::As, 4);
-	keys[0][11].SetNoteName(conv::B,  4);
+	keys[0][ 0].note = Note(note::C,  4);
+	keys[0][ 1].note = Note(note::Cs, 4);
+	keys[0][ 2].note = Note(note::D,  4);
+	keys[0][ 3].note = Note(note::Ds, 4);
+	keys[0][ 4].note = Note(note::E,  4);
+	keys[0][ 5].note = Note(note::F,  4);
+	keys[0][ 6].note = Note(note::Fs, 4);
+	keys[0][ 7].note = Note(note::G,  4);
+	keys[0][ 8].note = Note(note::Gs, 4);
+	keys[0][ 9].note = Note(note::A,  4);
+	keys[0][10].note = Note(note::As, 4);
+	keys[0][11].note = Note(note::B,  4);
 
 	keys[1][ 0].key = sf::Keyboard::Q;
 	keys[1][ 1].key = sf::Keyboard::W;
@@ -113,18 +113,18 @@ int main()
 	keys[1][ 9].key = sf::Keyboard::P;
 	keys[1][10].key = sf::Keyboard::LBracket;
 	keys[1][11].key = sf::Keyboard::RBracket;
-	keys[1][ 0].SetNoteName(conv::C,  3);
-	keys[1][ 1].SetNoteName(conv::Cs, 3);
-	keys[1][ 2].SetNoteName(conv::D,  3);
-	keys[1][ 3].SetNoteName(conv::Ds, 3);
-	keys[1][ 4].SetNoteName(conv::E,  3);
-	keys[1][ 5].SetNoteName(conv::F,  3);
-	keys[1][ 6].SetNoteName(conv::Fs, 3);
-	keys[1][ 7].SetNoteName(conv::G,  3);
-	keys[1][ 8].SetNoteName(conv::Gs, 3);
-	keys[1][ 9].SetNoteName(conv::A,  3);
-	keys[1][10].SetNoteName(conv::As, 3);
-	keys[1][11].SetNoteName(conv::B,  3);
+	keys[1][ 0].note = Note(note::C,  3);
+	keys[1][ 1].note = Note(note::Cs, 3);
+	keys[1][ 2].note = Note(note::D,  3);
+	keys[1][ 3].note = Note(note::Ds, 3);
+	keys[1][ 4].note = Note(note::E,  3);
+	keys[1][ 5].note = Note(note::F,  3);
+	keys[1][ 6].note = Note(note::Fs, 3);
+	keys[1][ 7].note = Note(note::G,  3);
+	keys[1][ 8].note = Note(note::Gs, 3);
+	keys[1][ 9].note = Note(note::A,  3);
+	keys[1][10].note = Note(note::As, 3);
+	keys[1][11].note = Note(note::B,  3);
 
 	keys[2][ 0].key = sf::Keyboard::A;
 	keys[2][ 1].key = sf::Keyboard::S;
@@ -138,18 +138,22 @@ int main()
 	keys[2][ 9].key = sf::Keyboard::SemiColon;
 	keys[2][10].key = sf::Keyboard::Quote;
 	keys[2][11].key = sf::Keyboard::Return;
-	keys[2][ 0].SetNoteName(conv::C,  2);
-	keys[2][ 1].SetNoteName(conv::Cs, 2);
-	keys[2][ 2].SetNoteName(conv::D,  2);
-	keys[2][ 3].SetNoteName(conv::Ds, 2);
-	keys[2][ 4].SetNoteName(conv::E,  2);
-	keys[2][ 5].SetNoteName(conv::F,  2);
-	keys[2][ 6].SetNoteName(conv::Fs, 2);
-	keys[2][ 7].SetNoteName(conv::G,  2);
-	keys[2][ 8].SetNoteName(conv::Gs, 2);
-	keys[2][ 9].SetNoteName(conv::A,  2);
-	keys[2][10].SetNoteName(conv::As, 2);
-	keys[2][11].SetNoteName(conv::B,  2);
+	keys[2][ 0].note = Note(note::C,  2);
+	keys[2][ 1].note = Note(note::Cs, 2);
+	keys[2][ 2].note = Note(note::D,  2);
+	keys[2][ 3].note = Note(note::Ds, 2);
+	keys[2][ 4].note = Note(note::E,  2);
+	keys[2][ 5].note = Note(note::F,  2);
+	keys[2][ 6].note = Note(note::Fs, 2);
+	keys[2][ 7].note = Note(note::G,  2);
+	keys[2][ 8].note = Note(note::Gs, 2);
+	keys[2][ 9].note = Note(note::A,  2);
+	keys[2][10].note = Note(note::As, 2);
+	keys[2][11].note = Note(note::B,  2);
+
+	for (int r = 0; r < 3; r++)
+		for (int i = 0; i < 12; i++)
+			keys[r][i].CreateSprites();
 
 	while (ml.Update()) {
 		sf::Time realTime = ml.clock.getElapsedTime();
@@ -222,11 +226,6 @@ int main()
 
 		if (gui.BeginSettingsWindow()) {
 			if (ImGui::CollapsingHeader("Sampling options")) {
-				if (ImGui::Button("Regenerate samples"))
-					for (int r = 0; r < 3; r++)
-						for (int i = 0; i < 12; i++)
-							keys[r][i].GenerateSamples();
-
 				ImGui::Text("Preview");
 				static int samplesInPreview = 2000;
 				float samplesInPreviewFloat = samplesInPreview;
@@ -238,6 +237,7 @@ int main()
 
 				ImGui::Spacing();
 
+#if 0
 				struct {
 					Key *key;
 					const char *noteName;
@@ -260,6 +260,7 @@ int main()
 							samplesInPreview, 0, "", -32767, 32767,
 							ImVec2(0, Constants.gui.graphHeight));
 				}
+#endif
 
 				ImGui::Spacing();
 
@@ -276,7 +277,14 @@ int main()
 			ImGui::End();
 		}
 
-		gui.WaveWindow();
+		static bool shouldCompile = true;
+		gui.WaveWindow(&shouldCompile);
+		if (shouldCompile) {
+			script.CopyAndExecute("wave.lua");
+			for (int r = 0; r < 3; r++)
+				for (int i = 0; i < 12; i++)
+					keys[r][i].note.GenerateSamples(&script);
+		}
 
 		gui.MainMenuBar();
 

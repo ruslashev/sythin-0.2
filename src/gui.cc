@@ -354,11 +354,12 @@ bool Gui::BeginSettingsWindow()
 	return true;
 }
 
-void Gui::WaveWindow()
+void Gui::WaveWindow(bool *shouldCompile)
 {
 	if (!waveOpen)
 		return;
-	ImVec2 windowSize(Globals.windowWidth - Constants.padding - Constants.gui.width - Constants.padding - Constants.padding,
+	ImVec2 windowSize(Globals.windowWidth - Constants.padding -
+			Constants.gui.width - Constants.padding - Constants.padding,
 			400);
 	ImGuiWindowFlags windowFlags =
 		ImGuiWindowFlags_NoResize |
@@ -402,8 +403,10 @@ void Gui::WaveWindow()
 
 	}
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 4));
-	if (ImGui::Button("Compile")) {
-	}
+	*shouldCompile = false;
+	if (ImGui::Button("Compile"))
+		*shouldCompile = true;
+
 	ImGui::SameLine();
 	if (ImGui::Button("Save changes to file")) {
 		FILE *f = fopen("wave.lua", "wb");

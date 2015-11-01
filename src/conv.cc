@@ -31,11 +31,11 @@ sf::Color HSVtoRGB(int h_abs, int s_abs, int v_abs)
 	return out;
 }
 
-double NoteNameToFreq(conv::Name name, int octave)
+double NoteNameToFreq(note::Name name, int octave)
 {
 	// here "difference" is "measured" from A4
 	int octaveDifference = octave - 4;
-	int semitoneDifference = name - conv::A;
+	int semitoneDifference = name - note::A;
 
 	double frequency = Constants.stdTuning *
 		pow(2, octaveDifference) *

@@ -30,7 +30,7 @@ public:
 	void MainMenuBar();
 	void TabBar();
 	bool BeginSettingsWindow();
-	void WaveWindow();
+	void WaveWindow(bool *shouldCompile);
 	void CreateFontTexture(ImFont *imFont);
 	void Update(int dt);
 	void Draw();

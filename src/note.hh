@@ -3,23 +3,41 @@
 
 #include <SFML/Audio.hpp>
 
-struct NoteSym
-{
-	char letter, accidental;
-	int octave;
+#include "script.hh"
+
+namespace note {
+
+enum Name {
+	C,
+	Cs,
+	D,
+	Ds,
+	E,
+	F,
+	Fs,
+	G,
+	Gs,
+	A,
+	As,
+	B,
 };
+
+}
 
 class Note
 {
 	sf::SoundBuffer soundBuffer;
-	sf::Sound sound;
 public:
-	double baseFrequency;
+	sf::Sound sound;
+
+	note::Name name;
+	char letter, accidental;
+	int octave;
 
 	Note();
-	~Note();
+	Note(note::Name nName, int nOctave);
 
-	void GenerateSamples();
+	void GenerateSamples(Script *script);
 };
 
 #endif
