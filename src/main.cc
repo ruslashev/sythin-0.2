@@ -284,6 +284,7 @@ int main()
 			for (int r = 0; r < 3; r++)
 				for (int i = 0; i < 12; i++)
 					keys[r][i].note.GenerateSamples(&script);
+			shouldCompile = false;
 		}
 
 		gui.MainMenuBar();

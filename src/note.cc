@@ -38,8 +38,6 @@ Note::Note(note::Name nName, int nOctave)
 			break;
 	}
 	octave = nOctave;
-
-	sound.setBuffer(soundBuffer);
 }
 
 void Note::GenerateSamples(Script *script)
@@ -54,9 +52,6 @@ void Note::GenerateSamples(Script *script)
 		const double value = Globals.volume*
 			script->GetValue(omega, t);
 		samples[i] = value;
-		// later
-		// if (abs(value) < Globals.volume/1000.0)
-		// 	break;
 		t += secondsPerSample;
 		i++;
 	}
@@ -66,5 +61,7 @@ void Note::GenerateSamples(Script *script)
 		puts("Failed to copy sound buffer");
 		throw;
 	}
+
+	sound.setBuffer(soundBuffer);
 }
 

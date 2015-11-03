@@ -4,7 +4,6 @@ Script::Script()
 {
 	L = luaL_newstate();
 	luaL_openlibs(L);
-	puts("did u evn");
 }
 
 void Script::CopyAndExecute(const char *source)
