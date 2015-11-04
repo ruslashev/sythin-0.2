@@ -86,7 +86,7 @@ const struct
 	} gui {};
 	const char *defaultWaveScript =
 		"function wave(w, t)\n"
-		"	return sin(w*t)\n"
+		"\treturn sin(w*t)\n"
 		"end\n";
 } Constants {};
 

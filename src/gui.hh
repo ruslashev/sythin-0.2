@@ -8,6 +8,7 @@
 class Gui
 {
 	ImFont *font;
+	char editingBuffer[16*1024];
 
 	void checkShaderCompileSuccess(int shader);
 	void checkProgramLinkSuccess(int program);
@@ -31,6 +32,7 @@ public:
 	void TabBar();
 	bool BeginSettingsWindow();
 	void WaveWindow(bool *shouldCompile);
+	void WaveWindowFileOps();
 	void CreateFontTexture(ImFont *imFont);
 	void Update(int dt);
 	void Draw();

@@ -84,6 +84,8 @@ Gui::Gui()
 		throw;
 	}
 
+	// editingBuffer = new char [16*1024];
+
 	fontTexture = 0;
 	shaderHandle = 0, vertHandle = 0, fragHandle = 0;
 	attribLocationTex = 0, attribLocationProjMtx = 0;
@@ -374,12 +376,33 @@ void Gui::WaveWindow(bool *shouldCompile)
 	ImGui::Begin("Wave", &waveOpen,
 			windowSize, Constants.gui.alpha, windowFlags);
 
-	static char buffer[16*1024] = { '\0' };
+	for (size_t i = 0; i < 16*1024; i++)
+		editingBuffer[i] = '\0';
+
+	WaveWindowFileOps();
+
+	ImGui::SameLine();
+
+	*shouldCompile = false;
+	if (ImGui::Button("Compile"))
+		*shouldCompile = true;
+	ImGui::PopStyleVar();
+
+	ImGui::InputTextMultiline("##source", editingBuffer, 16*1024,
+			ImVec2(-1.0f, ImGui::GetTextLineHeight()*10),
+			ImGuiInputTextFlags_AllowTabInput);
+
+	ImGui::End();
+}
+
+void Gui::WaveWindowFileOps()
+{
 	static bool failedToSave = false, failedToRead = false;
 	static bool once = true;
+
 	if (once) {
 		once = false;
-		memset(buffer, 0, 16*1024);
+		memset(editingBuffer, 0, 16*1024);
 		FILE *f = fopen("wave.lua", "rb");
 		if (!f) {
 			f = fopen("wave.lua", "wb");
@@ -394,53 +417,12 @@ void Gui::WaveWindow(bool *shouldCompile)
 		fseek(f, 0, SEEK_END);
 		size_t fileSize = ftell(f);
 		rewind(f);
-
-		if (fread(buffer, 1, fileSize, f) != fileSize) {
+		if (fread(editingBuffer, 1, fileSize, f) != fileSize) {
 			failedToSave = false;
 			failedToRead = true;
 		}
 		fclose(f);
-
 	}
-	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 4));
-	*shouldCompile = false;
-	if (ImGui::Button("Compile"))
-		*shouldCompile = true;
-
-	ImGui::SameLine();
-	if (ImGui::Button("Save changes to file")) {
-		FILE *f = fopen("wave.lua", "wb");
-		if (!f) {
-			failedToSave = true;
-			failedToRead = false;
-		}
-		fputs(buffer, f);
-		fclose(f);
-	}
-	ImGui::SameLine();
-	if (ImGui::Button("Re-read file"))
-		ImGui::OpenPopup("Discard changes?");
-	ImGui::SameLine();
-	if (ImGui::Button("Restart with clean file")) {
-	}
-	ImGui::Text("todo: merge these buttons to FileOps modal");
-	ImGui::PopStyleVar();
-
-	if (ImGui::BeginPopupModal("Discard changes?", NULL,
-				ImGuiWindowFlags_NoMove |ImGuiWindowFlags_AlwaysAutoResize)) {
-		ImGui::Text("Your changes will be overwritten and discarded.\nThis operation cannot be undone!\n");
-		// ImGui::Separator();
-
-		if (ImGui::Button("OK", ImVec2(120,0))) {
-			once = true;
-			ImGui::CloseCurrentPopup();
-		}
-		ImGui::SameLine();
-		if (ImGui::Button("Cancel", ImVec2(120,0)))
-			ImGui::CloseCurrentPopup();
-		ImGui::EndPopup();
-	}
-
 	if (failedToSave) {
 		ImGui::TextColored(ImVec4(1, 0.3, 0.3, 1),
 				"Failed to save new file \"wave.lua\" (this shouldn't happen)");
@@ -454,11 +436,64 @@ void Gui::WaveWindow(bool *shouldCompile)
 		return;
 	}
 
-	ImGui::InputTextMultiline("##source", buffer, 16*1024,
-			ImVec2(-1.0f, ImGui::GetTextLineHeight()*10),
-			ImGuiInputTextFlags_AllowTabInput);
-
-	ImGui::End();
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 4));
+	if (ImGui::Button("File"))
+		ImGui::OpenPopup("file");
+	static bool newPopup = false, reopenPopup = false;
+	if (ImGui::BeginPopup("file")) {
+		if (ImGui::Selectable("New"))
+			newPopup = true;
+		if (ImGui::Selectable("Save")) {
+			FILE *f = fopen("wave.lua", "wb");
+			if (!f) {
+				failedToSave = true;
+				failedToRead = false;
+			}
+			fputs(editingBuffer, f);
+			fclose(f);
+		}
+		if (ImGui::Selectable("Reopen"))
+			reopenPopup = true;
+		ImGui::EndPopup();
+	}
+	if (newPopup) {
+		ImGui::OpenPopup("Start over?");
+		newPopup = false;
+	}
+	if (ImGui::BeginPopupModal("Start over?", NULL,
+				ImGuiWindowFlags_NoMove
+				| ImGuiWindowFlags_AlwaysAutoResize)) {
+		ImGui::Text("Your changes will be overwritten and discarded.\n"
+				"This operation cannot be undone!\n");
+		// ImGui::Separator();
+		if (ImGui::Button("OK", ImVec2(120,0))) {
+			strncpy(editingBuffer, Constants.defaultWaveScript, 16*1024);
+			ImGui::CloseCurrentPopup();
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Cancel", ImVec2(120,0)))
+			ImGui::CloseCurrentPopup();
+		ImGui::EndPopup();
+	}
+	if (reopenPopup) {
+		ImGui::OpenPopup("Reopen file?");
+		reopenPopup = false;
+	}
+	if (ImGui::BeginPopupModal("Discard changes?", NULL,
+				ImGuiWindowFlags_NoMove
+				| ImGuiWindowFlags_AlwaysAutoResize)) {
+		ImGui::Text("Your changes will be overwritten and discarded.\n"
+				"This operation cannot be undone!\n");
+		// ImGui::Separator();
+		if (ImGui::Button("OK", ImVec2(120,0))) {
+			once = true;
+			ImGui::CloseCurrentPopup();
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Cancel", ImVec2(120,0)))
+			ImGui::CloseCurrentPopup();
+		ImGui::EndPopup();
+	}
 }
 
 void Gui::CreateFontTexture(ImFont *imFont)
@@ -513,6 +548,8 @@ void Gui::Draw()
 
 Gui::~Gui()
 {
+	// delete [] editingBuffer;
+
 	if (vaoHandle) glDeleteVertexArrays(1, &vaoHandle);
 	if (vboHandle) glDeleteBuffers(1, &vboHandle);
 	if (elementsHandle) glDeleteBuffers(1, &elementsHandle);
