@@ -3,7 +3,7 @@
 
 #include <string>
 #include <cstring>
-#include <lua.hpp>
+#include "lua.hpp"
 
 class Script
 {
