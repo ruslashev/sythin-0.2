@@ -2,6 +2,7 @@
 #define CONV_HH
 
 #include <SFML/Graphics.hpp>
+#include <cmath>
 
 #include "note.hh"
 

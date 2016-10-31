@@ -10,7 +10,7 @@ OBJS = $(patsubst $(SRCDIR)/%.cc,.objs/%.o, \
 	   $(shell find $(SRCDIR) -type f -name '*.cc' ))
 
 CXX = g++
-CXXFLAGS = -Wall -Wextra -Werror -g -std=c++0x
+CXXFLAGS = -Wall -Wextra -Wno-deprecated-declarations -Werror -g -std=c++0x
 IMGUI_CXXFLAGS = -g -std=c++0x
 CC = gcc
 CCFLAGS = -w -fpermissive
